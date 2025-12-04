@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>차트 검증</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            background: #1e3c72;
+            color: white;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 20px 0;
+            height: 400px;
+            position: relative;
+        }
+        .info {
+            background: rgba(86, 182, 242, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>차트 검증 테스트</h1>
+    
+    <div class="info">
+        <strong>테스트 1:</strong> 기본 차트 (테스트 차트와 동일)
+    </div>
+    <div class="chart-container">
+        <canvas id="testChart1"></canvas>
+    </div>
+    
+    <div class="info">
+        <strong>테스트 2:</strong> 플랫폼 차트 (메인 대시보드와 동일한 방식)
+    </div>
+    <div class="chart-container">
+        <canvas id="platformChart"></canvas>
+    </div>
+    
+    <div id="log" style="background: rgba(0,0,0,0.5); padding: 15px; margin-top: 20px; border-radius: 8px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;">
+        <strong>로그:</strong><br>
+    </div>
+    
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '<br>';
+            console.log(message);
+        }
+        
+        log('스크립트 시작');
+        log('Chart.js 상태: ' + (typeof Chart !== 'undefined' ? '로드됨' : '로드 안됨'));
+        
+        window.addEventListener('load', function() {
+            log('=== window.onload 이벤트 발생 ===');
+            
+            if (typeof Chart === 'undefined') {
+                log('❌ Chart.js가 로드되지 않았습니다');
+                return;
+            }
+            
+            log('✅ Chart.js 확인됨');
+            
+            // 테스트 1: 기본 차트
+            const test1 = document.getElementById('testChart1');
+            if (test1) {
+                log('테스트 1 차트 생성 시작');
+                const chart1 = new Chart(test1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Windows', 'macOS', 'Linux'],
+                        datasets: [{
+                            label: '지원 게임 수',
+                            data: [239664, 45678, 23456],
+                            backgroundColor: ['#56B6F2', '#F2C94C', '#4CAF50']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        },
+                        scales: {
+                            y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                        }
+                    }
+                });
+                log('✅ 테스트 1 차트 생성 완료: ' + (chart1 ? '성공' : '실패'));
+            } else {
+                log('❌ testChart1 요소를 찾을 수 없습니다');
+            }
+            
+            // 테스트 2: 플랫폼 차트 (메인 대시보드와 동일)
+            const platformEl = document.getElementById('platformChart');
+            if (!platformEl) {
+                log('❌ platformChart 요소를 찾을 수 없습니다');
+            } else {
+                log('플랫폼 차트 생성 시작');
+                const data = {
+                    statistics: {
+                        platformSupport: {
+                            windows: 239664,
+                            mac: 45678,
+                            linux: 23456
+                        }
+                    }
+                };
+                log('데이터 준비 완료: ' + JSON.stringify(data.statistics.platformSupport));
+                
+                const platformChart = new Chart(platformEl, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Windows', 'macOS', 'Linux'],
+                        datasets: [{
+                            label: '지원 게임 수',
+                            data: [
+                                data.statistics.platformSupport.windows,
+                                data.statistics.platformSupport.mac,
+                                data.statistics.platformSupport.linux
+                            ],
+                            backgroundColor: ['#56B6F2', '#F2C94C', '#4CAF50']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        },
+                        scales: {
+                            y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                        }
+                    }
+                });
+                log('✅ 플랫폼 차트 생성 완료: ' + (platformChart ? '성공' : '실패'));
+                log('차트 인스턴스: ' + (platformChart ? '존재함' : '없음'));
+            }
+            
+            log('=== 모든 테스트 완료 ===');
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            background: #1e3c72;
+            color: white;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 20px 0;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chart.js 테스트</h1>
+    <div class="chart-container">
+        <canvas id="testChart"></canvas>
+    </div>
+    
+    <script>
+        console.log('Chart.js 상태:', typeof Chart !== 'undefined' ? '로드됨' : '로드 안됨');
+        
+        window.addEventListener('load', function() {
+            console.log('window.onload 실행');
+            
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js가 로드되지 않았습니다');
+                return;
+            }
+            
+            const ctx = document.getElementById('testChart');
+            if (!ctx) {
+                console.error('canvas 요소를 찾을 수 없습니다');
+                return;
+            }
+            
+            console.log('차트 생성 시작');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Windows', 'macOS', 'Linux'],
+                    datasets: [{
+                        label: '지원 게임 수',
+                        data: [239664, 45678, 23456],
+                        backgroundColor: ['#56B6F2', '#F2C94C', '#4CAF50']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    },
+                    scales: {
+                        y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
+                }
+            });
+            
+            console.log('차트 생성 완료:', myChart);
+        });
+    </script>
+</body>
+</html>
+

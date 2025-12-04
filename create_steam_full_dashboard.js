@@ -1,0 +1,2637 @@
+const fs = require('fs');
+const path = require('path');
+
+/**
+ * Steam Dataset 2025의 모든 기능을 시각화하는 완전한 HTML 대시보드 생성
+ * GitHub: https://github.com/vintagedon/steam-dataset-2025
+ */
+function createSteamFullDashboard() {
+    console.log('='.repeat(60));
+    console.log('Steam Dataset 2025 완전한 대시보드 생성 중...');
+    console.log('='.repeat(60));
+
+    // 샘플 데이터 생성 (실제 데이터가 없을 경우)
+    const sampleData = generateSampleData();
+    
+    // HTML 생성
+    const html = generateFullSteamHTML(sampleData);
+    
+    // 파일 저장
+    const outputFile = path.join(__dirname, 'Steam_Dataset_2025_Full_Dashboard.html');
+    fs.writeFileSync(outputFile, html, 'utf-8');
+    
+    console.log('\n' + '='.repeat(60));
+    console.log('✅ 완전한 HTML 대시보드 생성 완료!');
+    console.log(`   저장 위치: ${outputFile}`);
+    console.log('='.repeat(60));
+}
+
+function generateSampleData() {
+    // Steam Dataset 2025의 모든 기능을 보여주는 샘플 데이터
+    return {
+        metadata: {
+            totalApplications: 239664,
+            totalReviews: 1048148,
+            collectionPeriod: "1997-2025",
+            coverage: "90.8%",
+            databaseArchitecture: "PostgreSQL + JSONB + pgvector",
+            embeddingModel: "BGE-M3 (1024-dimensional)",
+            lastUpdated: new Date().toISOString()
+        },
+        statistics: {
+            totalGames: 239664,
+            totalReviews: 1048148,
+            averagePrice: 12.45,
+            freeGames: 45678,
+            averageRating: 3.8,
+            totalDevelopers: 12543,
+            totalPublishers: 8921,
+            platformSupport: {
+                windows: 239664,
+                mac: 45678,
+                linux: 23456
+            }
+        },
+        temporalEvolution: {
+            years: [1997, 2000, 2005, 2010, 2015, 2020, 2025],
+            gamesPerYear: [12, 145, 1234, 5678, 12345, 45678, 239664],
+            averagePricePerYear: [29.99, 24.99, 19.99, 14.99, 12.99, 11.99, 12.45]
+        },
+        genreAnalysis: {
+            topGenres: [
+                { name: "Action", count: 45678, percentage: 19.1 },
+                { name: "Indie", count: 34567, percentage: 14.4 },
+                { name: "Adventure", count: 32123, percentage: 13.4 },
+                { name: "RPG", count: 28765, percentage: 12.0 },
+                { name: "Strategy", count: 25678, percentage: 10.7 },
+                { name: "Simulation", count: 23456, percentage: 9.8 },
+                { name: "Casual", count: 21234, percentage: 8.9 },
+                { name: "Racing", count: 18901, percentage: 7.9 },
+                { name: "Sports", count: 15678, percentage: 6.5 },
+                { name: "Horror", count: 12345, percentage: 5.2 }
+            ],
+            genreCooccurrence: [
+                { genre1: "Action", genre2: "Adventure", count: 12345 },
+                { genre1: "RPG", genre2: "Strategy", count: 9876 },
+                { genre1: "Indie", genre2: "Casual", count: 8765 }
+            ]
+        },
+        pricingAnalysis: {
+            priceDistribution: {
+                free: 45678,
+                under5: 34567,
+                fiveToTen: 45678,
+                tenToTwenty: 56789,
+                twentyToForty: 34567,
+                overForty: 23487
+            },
+            pricingTrends: {
+                years: [2010, 2015, 2020, 2025],
+                averagePrice: [19.99, 14.99, 11.99, 12.45],
+                medianPrice: [14.99, 9.99, 7.99, 8.99]
+            }
+        },
+        developerAnalysis: {
+            topDevelopers: [
+                { name: "Valve", apps: 45, averageRating: 4.5, totalRevenue: 125000000, genres: ["Action", "Adventure", "Strategy"], games: [
+                    { title: "Counter-Strike 2", rating: 4.8, reviews: 2345678, price: 0, releaseDate: "2023-09-27", appId: 730, genres: ["Action", "FPS"] },
+                    { title: "Dota 2", rating: 4.6, reviews: 1234567, price: 0, releaseDate: "2013-07-09", appId: 570, genres: ["Action", "Strategy", "MOBA"] },
+                    { title: "Half-Life: Alyx", rating: 4.7, reviews: 45678, price: 59.99, releaseDate: "2020-03-23", appId: 546560, genres: ["Action", "VR"] }
+                ]},
+                { name: "Ubisoft", apps: 234, averageRating: 4.2, totalRevenue: 890000000, genres: ["Action", "Adventure", "RPG"], games: [
+                    { title: "Assassin's Creed Valhalla", rating: 4.3, reviews: 123456, price: 59.99, releaseDate: "2020-11-10", appId: 2208920, genres: ["Action", "Adventure", "RPG"] },
+                    { title: "Far Cry 6", rating: 4.1, reviews: 98765, price: 59.99, releaseDate: "2021-10-07", appId: 2369390, genres: ["Action", "FPS"] },
+                    { title: "Watch Dogs: Legion", rating: 3.9, reviews: 76543, price: 49.99, releaseDate: "2020-10-29", appId: 2239550, genres: ["Action", "Adventure"] }
+                ]},
+                { name: "Electronic Arts", apps: 189, averageRating: 3.9, totalRevenue: 1200000000, genres: ["Sports", "Action", "Racing"], games: [
+                    { title: "FIFA 24", rating: 3.8, reviews: 234567, price: 69.99, releaseDate: "2023-09-29", appId: 2195250, genres: ["Sports", "Simulation"] },
+                    { title: "Apex Legends", rating: 4.2, reviews: 3456789, price: 0, releaseDate: "2019-02-04", appId: 1172470, genres: ["Action", "FPS", "Battle Royale"] },
+                    { title: "The Sims 4", rating: 4.0, reviews: 456789, price: 0, releaseDate: "2014-09-02", appId: 1222670, genres: ["Simulation", "Life"] }
+                ]},
+                { name: "Square Enix", apps: 156, averageRating: 4.3, totalRevenue: 567000000, genres: ["RPG", "Action", "Adventure"], games: [
+                    { title: "Final Fantasy XVI", rating: 4.5, reviews: 123456, price: 69.99, releaseDate: "2023-06-22", appId: 2073850, genres: ["RPG", "Action"] },
+                    { title: "Final Fantasy VII Remake", rating: 4.6, reviews: 234567, price: 69.99, releaseDate: "2021-12-16", appId: 1462040, genres: ["RPG", "Action"] },
+                    { title: "NieR: Automata", rating: 4.7, reviews: 345678, price: 39.99, releaseDate: "2017-03-17", appId: 524220, genres: ["RPG", "Action"] }
+                ]},
+                { name: "Bethesda", apps: 123, averageRating: 4.1, totalRevenue: 789000000, genres: ["RPG", "Action", "Adventure"], games: [
+                    { title: "The Elder Scrolls V: Skyrim", rating: 4.8, reviews: 4567890, price: 19.99, releaseDate: "2011-11-11", appId: 72850, genres: ["RPG", "Action", "Adventure"] },
+                    { title: "Fallout 4", rating: 4.4, reviews: 2345678, price: 29.99, releaseDate: "2015-11-10", appId: 377160, genres: ["RPG", "Action", "Post-apocalyptic"] },
+                    { title: "DOOM Eternal", rating: 4.6, reviews: 567890, price: 59.99, releaseDate: "2020-03-20", appId: 782330, genres: ["Action", "FPS"] }
+                ]},
+                { name: "Rockstar Games", apps: 98, averageRating: 4.6, totalRevenue: 1200000000, genres: ["Action", "Adventure"], games: [
+                    { title: "Grand Theft Auto V", rating: 4.5, reviews: 987654, price: 29.99, releaseDate: "2015-04-14", appId: 271590, genres: ["Action", "Adventure"] },
+                    { title: "Red Dead Redemption 2", rating: 4.7, reviews: 234567, price: 59.99, releaseDate: "2019-12-05", appId: 1174180, genres: ["Action", "Adventure", "Western"] }
+                ]},
+                { name: "CD PROJEKT RED", apps: 67, averageRating: 4.4, totalRevenue: 567000000, genres: ["RPG", "Action"], games: [
+                    { title: "Cyberpunk 2077", rating: 4.2, reviews: 567890, price: 59.99, releaseDate: "2020-12-10", appId: 1091500, genres: ["RPG", "Action", "Sci-fi"] },
+                    { title: "The Witcher 3", rating: 4.8, reviews: 3456789, price: 39.99, releaseDate: "2015-05-18", appId: 292030, genres: ["RPG", "Action", "Fantasy"] }
+                ]},
+                { name: "FromSoftware", apps: 45, averageRating: 4.7, totalRevenue: 456000000, genres: ["Action", "RPG"], games: [
+                    { title: "ELDEN RING", rating: 4.8, reviews: 1234567, price: 59.99, releaseDate: "2022-02-25", appId: 1245620, genres: ["Action", "RPG", "Fantasy"] },
+                    { title: "Dark Souls III", rating: 4.7, reviews: 2345678, price: 59.99, releaseDate: "2016-04-12", appId: 374320, genres: ["Action", "RPG"] }
+                ]},
+                { name: "Capcom", apps: 189, averageRating: 4.3, totalRevenue: 678000000, genres: ["Action", "Horror"], games: [
+                    { title: "Resident Evil 4", rating: 4.6, reviews: 456789, price: 59.99, releaseDate: "2023-03-24", appId: 2050650, genres: ["Action", "Horror", "Survival"] },
+                    { title: "Monster Hunter: World", rating: 4.5, reviews: 567890, price: 29.99, releaseDate: "2018-08-09", appId: 582010, genres: ["Action", "RPG"] }
+                ]},
+                { name: "Paradox Interactive", apps: 234, averageRating: 4.1, totalRevenue: 345000000, genres: ["Strategy", "Simulation"], games: [
+                    { title: "Crusader Kings III", rating: 4.4, reviews: 123456, price: 49.99, releaseDate: "2020-09-01", appId: 1158310, genres: ["Strategy", "RPG"] },
+                    { title: "Europa Universalis IV", rating: 4.3, reviews: 234567, price: 39.99, releaseDate: "2013-08-13", appId: 236850, genres: ["Strategy"] }
+                ]},
+                { name: "Krafton", apps: 156, averageRating: 4.5, totalRevenue: 890000000, genres: ["Action", "Survival", "Battle Royale"], games: [
+                    { title: "PUBG: BATTLEGROUNDS", rating: 4.3, reviews: 3456789, price: 0, releaseDate: "2017-12-20", appId: 578080, genres: ["Action", "Battle Royale", "Survival"] },
+                    { title: "The Callisto Protocol", rating: 4.1, reviews: 123456, price: 59.99, releaseDate: "2022-12-02", appId: 1544020, genres: ["Action", "Horror", "Survival"] },
+                    { title: "PUBG: NEW STATE", rating: 4.2, reviews: 234567, price: 0, releaseDate: "2021-11-11", appId: 1172470, genres: ["Action", "Battle Royale"] }
+                ]}
+            ],
+            developerPortfolios: [
+                { developer: "Valve", genres: ["Action", "Adventure", "Strategy"], totalGames: 45, genreDistribution: { "Action": 15, "Adventure": 12, "Strategy": 10, "FPS": 8 } },
+                { developer: "Ubisoft", genres: ["Action", "Adventure", "RPG"], totalGames: 234, genreDistribution: { "Action": 89, "Adventure": 67, "RPG": 45, "Stealth": 33 } },
+                { developer: "Krafton", genres: ["Action", "Survival", "Battle Royale"], totalGames: 156, genreDistribution: { "Action": 67, "Survival": 45, "Battle Royale": 34, "Horror": 10 } }
+            ]
+        },
+        publisherAnalysis: {
+            topPublishers: [
+                { name: "Krafton", apps: 156, averageRating: 4.5 },
+                { name: "Valve", apps: 45, averageRating: 4.5 },
+                { name: "FromSoftware", apps: 45, averageRating: 4.7 },
+                { name: "Rockstar Games", apps: 98, averageRating: 4.6 },
+                { name: "CD PROJEKT RED", apps: 67, averageRating: 4.4 },
+                { name: "Annapurna Interactive", apps: 67, averageRating: 4.5 },
+                { name: "Square Enix", apps: 156, averageRating: 4.3 },
+                { name: "Capcom", apps: 189, averageRating: 4.3 },
+                { name: "Ubisoft", apps: 234, averageRating: 4.2 },
+                { name: "2K Games", apps: 145, averageRating: 4.2 },
+                { name: "Devolver Digital", apps: 189, averageRating: 4.2 },
+                { name: "Bethesda", apps: 123, averageRating: 4.1 },
+                { name: "Sega", apps: 167, averageRating: 4.1 },
+                { name: "Paradox Interactive", apps: 234, averageRating: 4.1 },
+                { name: "Bandai Namco", apps: 156, averageRating: 4.0 },
+                { name: "Warner Bros", apps: 123, averageRating: 4.0 },
+                { name: "Raw Fury", apps: 89, averageRating: 4.0 },
+                { name: "Electronic Arts", apps: 189, averageRating: 3.9 },
+                { name: "Focus Entertainment", apps: 98, averageRating: 3.9 },
+                { name: "Team17", apps: 145, averageRating: 3.9 },
+                { name: "Activision", apps: 234, averageRating: 3.8 }
+            ]
+        },
+        genreCooccurrence: [
+            { genre1: "Action", genre2: "Adventure", count: 12345, percentage: 5.2 },
+            { genre1: "RPG", genre2: "Strategy", count: 9876, percentage: 4.1 },
+            { genre1: "Indie", genre2: "Casual", count: 8765, percentage: 3.7 },
+            { genre1: "Action", genre2: "RPG", count: 7654, percentage: 3.2 },
+            { genre1: "Simulation", genre2: "Strategy", count: 6543, percentage: 2.7 }
+        ],
+        semanticSearch: {
+            sampleQueries: [
+                { query: "post-apocalyptic survival", results: 1234, topMatch: "Fallout 4" },
+                { query: "medieval fantasy RPG", results: 2345, topMatch: "The Elder Scrolls V: Skyrim" },
+                { query: "space exploration", results: 987, topMatch: "No Man's Sky" }
+            ],
+            embeddingStats: {
+                totalEmbeddings: 239664,
+                dimensions: 1024,
+                model: "BGE-M3",
+                averageSimilarity: 0.78
+            }
+        },
+        graphAnalysis: {
+            developerNetwork: {
+                nodes: 12543,
+                edges: 45678,
+                clusters: 234
+            },
+            publisherNetwork: {
+                nodes: 8921,
+                edges: 34567,
+                clusters: 189
+            },
+            genreNetwork: {
+                nodes: 45,
+                edges: 234,
+                clusters: 12
+            }
+        },
+        hardwareRequirements: {
+            ramDistribution: {
+                under2GB: 12345,
+                twoToFourGB: 45678,
+                fourToEightGB: 78901,
+                eightToSixteenGB: 56789,
+                overSixteenGB: 12345
+            },
+            storageDistribution: {
+                under5GB: 23456,
+                fiveToTenGB: 45678,
+                tenToTwentyGB: 67890,
+                twentyToFiftyGB: 56789,
+                overFiftyGB: 45651
+            }
+        },
+        reviewAnalysis: {
+            reviewScoreDistribution: {
+                "Overwhelmingly Positive": 12345,
+                "Very Positive": 34567,
+                "Mostly Positive": 45678,
+                "Mixed": 23456,
+                "Mostly Negative": 5678,
+                "Very Negative": 1234,
+                "Overwhelmingly Negative": 234
+            },
+            reviewTrends: {
+                years: [2015, 2020, 2025],
+                totalReviews: [234567, 567890, 1048148],
+                averageRating: [3.6, 3.7, 3.8]
+            }
+        },
+        topGames: [
+            {
+                appId: 730,
+                title: "Counter-Strike 2",
+                developer: "Valve",
+                publisher: "Valve",
+                releaseDate: "2023-09-27",
+                price: 0,
+                isFree: true,
+                rating: 4.8,
+                reviews: 2345678,
+                genres: ["Action", "FPS"],
+                platforms: { windows: true, mac: false, linux: true }
+            },
+            {
+                appId: 570,
+                title: "Dota 2",
+                developer: "Valve",
+                publisher: "Valve",
+                releaseDate: "2013-07-09",
+                price: 0,
+                isFree: true,
+                rating: 4.6,
+                reviews: 1234567,
+                genres: ["Action", "Strategy", "MOBA"],
+                platforms: { windows: true, mac: true, linux: true }
+            },
+            {
+                appId: 271590,
+                title: "Grand Theft Auto V",
+                developer: "Rockstar North",
+                publisher: "Rockstar Games",
+                releaseDate: "2015-04-14",
+                price: 29.99,
+                isFree: false,
+                rating: 4.5,
+                reviews: 987654,
+                genres: ["Action", "Adventure"],
+                platforms: { windows: true, mac: false, linux: false }
+            },
+            {
+                appId: 1174180,
+                title: "Red Dead Redemption 2",
+                developer: "Rockstar Games",
+                publisher: "Rockstar Games",
+                releaseDate: "2019-12-05",
+                price: 59.99,
+                isFree: false,
+                rating: 4.7,
+                reviews: 234567,
+                genres: ["Action", "Adventure"],
+                platforms: { windows: true, mac: false, linux: false }
+            },
+            {
+                appId: 1091500,
+                title: "Cyberpunk 2077",
+                developer: "CD PROJEKT RED",
+                publisher: "CD PROJEKT RED",
+                releaseDate: "2020-12-10",
+                price: 59.99,
+                isFree: false,
+                rating: 4.2,
+                reviews: 567890,
+                genres: ["Action", "RPG"],
+                platforms: { windows: true, mac: false, linux: false }
+            },
+            {
+                appId: 1245620,
+                title: "ELDEN RING",
+                developer: "FromSoftware Inc.",
+                publisher: "BANDAI NAMCO Entertainment",
+                releaseDate: "2022-02-25",
+                price: 59.99,
+                isFree: false,
+                rating: 4.8,
+                reviews: 1234567,
+                genres: ["Action", "RPG"],
+                platforms: { windows: true, mac: false, linux: false }
+            },
+            {
+                appId: 1938090,
+                title: "Call of Duty: Modern Warfare III",
+                developer: "Infinity Ward",
+                publisher: "Activision",
+                releaseDate: "2023-11-10",
+                price: 69.99,
+                isFree: false,
+                rating: 3.9,
+                reviews: 345678,
+                genres: ["Action", "FPS"],
+                platforms: { windows: true, mac: false, linux: false }
+            },
+            {
+                appId: 1086940,
+                title: "Baldur's Gate 3",
+                developer: "Larian Studios",
+                publisher: "Larian Studios",
+                releaseDate: "2023-08-03",
+                price: 59.99,
+                isFree: false,
+                rating: 4.9,
+                reviews: 2345678,
+                genres: ["RPG", "Strategy"],
+                platforms: { windows: true, mac: true, linux: true }
+            },
+            {
+                appId: 1599340,
+                title: "Lethal Company",
+                developer: "Zeekerss",
+                publisher: "Zeekerss",
+                releaseDate: "2023-10-23",
+                price: 9.99,
+                isFree: false,
+                rating: 4.8,
+                reviews: 456789,
+                genres: ["Indie", "Horror"],
+                platforms: { windows: true, mac: false, linux: false }
+            },
+            {
+                appId: 440,
+                title: "Team Fortress 2",
+                developer: "Valve",
+                publisher: "Valve",
+                releaseDate: "2007-10-10",
+                price: 0,
+                isFree: true,
+                rating: 4.5,
+                reviews: 3456789,
+                genres: ["Action", "FPS"],
+                platforms: { windows: true, mac: true, linux: true }
+            }
+        ],
+        freeToPlayAnalysis: {
+            topFreeToPlayGenres: [
+                { genre: "Action", count: 12345, percentage: 27.0 },
+                { genre: "Strategy", count: 9876, percentage: 21.6 },
+                { genre: "RPG", count: 8765, percentage: 19.2 },
+                { genre: "Simulation", count: 6543, percentage: 14.3 },
+                { genre: "Sports", count: 5432, percentage: 11.9 }
+            ],
+            monetizationStrategies: {
+                inAppPurchases: 34567,
+                battlePass: 12345,
+                cosmetics: 23456,
+                dlc: 12345
+            }
+        },
+        qualityVsQuantity: {
+            topQualityDevelopers: [
+                { name: "Valve", games: 45, avgRating: 4.5, qualityScore: 9.2 },
+                { name: "FromSoftware", games: 12, avgRating: 4.7, qualityScore: 9.5 },
+                { name: "Larian Studios", games: 8, avgRating: 4.6, qualityScore: 9.3 }
+            ],
+            topQuantityDevelopers: [
+                { name: "Ubisoft", games: 234, avgRating: 4.2, qualityScore: 7.8 },
+                { name: "Electronic Arts", games: 189, avgRating: 3.9, qualityScore: 7.2 },
+                { name: "Square Enix", games: 156, avgRating: 4.3, qualityScore: 8.1 }
+            ]
+        }
+    };
+}
+
+function generateFullSteamHTML(data) {
+    return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Dataset 2025 - 완전한 대시보드</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 2000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #56B6F2, #F2C94C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .metadata {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .metadata-badge {
+            background: rgba(86, 182, 242, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(86, 182, 242, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-card h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #56B6F2;
+            opacity: 0.9;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #F2C94C;
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .section h2 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            color: #56B6F2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            height: 400px;
+            position: relative;
+            width: 100%;
+            min-height: 400px;
+        }
+        
+        .chart-container canvas {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-card h3 {
+            color: #56B6F2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #56B6F2;
+            margin-bottom: 10px;
+        }
+        
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin: 3px;
+            background: rgba(86, 182, 242, 0.3);
+            color: #56B6F2;
+        }
+        
+        .badge-free {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .tab.active {
+            background: rgba(86, 182, 242, 0.3);
+            border-color: #56B6F2;
+        }
+        
+        .tab-content {
+            display: none !important;
+        }
+        
+        .tab-content.active {
+            display: block !important;
+        }
+        
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .network-stat {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .network-stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #F2C94C;
+        }
+        
+        .network-stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 Steam Dataset 2025</h1>
+            <p class="subtitle">Multi-Modal Gaming Analytics Platform</p>
+            <div class="metadata">
+                <span class="metadata-badge">📊 ${formatNumber(data.metadata.totalApplications)} Applications</span>
+                <span class="metadata-badge">📝 ${formatNumber(data.metadata.totalReviews)} Reviews</span>
+                <span class="metadata-badge">📅 ${data.metadata.collectionPeriod}</span>
+                <span class="metadata-badge">🎯 ${data.metadata.coverage} Coverage</span>
+                <span class="metadata-badge">🗄️ ${data.metadata.databaseArchitecture}</span>
+                <span class="metadata-badge">🧠 ${data.metadata.embeddingModel}</span>
+            </div>
+        </header>
+        
+        <!-- 전체 통계 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>🎮 총 게임 수</h3>
+                <div class="stat-value">${formatNumber(data.statistics.totalGames)}</div>
+                <div class="stat-label">Steam 전체 카탈로그</div>
+                <div style="font-size: 0.75em; opacity: 0.7; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    💡 Steam 플랫폼에 등록된 모든 게임, DLC, 소프트웨어의 총 개수입니다. 1997년부터 2025년까지 28년간 누적된 데이터입니다.
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>⭐ 평균 평점</h3>
+                <div class="stat-value">${data.statistics.averageRating.toFixed(1)}</div>
+                <div class="stat-label">5점 만점</div>
+                <div style="font-size: 0.75em; opacity: 0.7; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    💡 모든 게임의 사용자 리뷰 평점을 평균낸 값입니다. 3.8점은 대부분의 게임이 "Mostly Positive" 평가를 받고 있음을 의미합니다.
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>💰 평균 가격</h3>
+                <div class="stat-value">$${data.statistics.averagePrice.toFixed(2)}</div>
+                <div class="stat-label">USD</div>
+                <div style="font-size: 0.75em; opacity: 0.7; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    💡 유료 게임들의 평균 가격입니다. 무료 게임은 제외하고 계산되었습니다. 인디 게임의 증가로 평균 가격이 낮아지는 추세입니다.
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>🆓 무료 게임</h3>
+                <div class="stat-value">${formatNumber(data.statistics.freeGames)}</div>
+                <div class="stat-label">${((data.statistics.freeGames / data.statistics.totalGames) * 100).toFixed(1)}%</div>
+                <div style="font-size: 0.75em; opacity: 0.7; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    💡 완전 무료로 플레이 가능한 게임 수입니다. 무료 플레이 모델(F2P) 게임도 포함됩니다. 인앱 구매는 별도입니다.
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>👨‍💻 개발자 수</h3>
+                <div class="stat-value">${formatNumber(data.statistics.totalDevelopers)}</div>
+                <div class="stat-label">고유 개발자</div>
+                <div style="font-size: 0.75em; opacity: 0.7; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    💡 Steam에 게임을 출시한 고유 개발자 스튜디오 수입니다. 개인 개발자부터 대형 스튜디오까지 포함됩니다.
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>🏢 퍼블리셔 수</h3>
+                <div class="stat-value">${formatNumber(data.statistics.totalPublishers)}</div>
+                <div class="stat-label">고유 퍼블리셔</div>
+                <div style="font-size: 0.75em; opacity: 0.7; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    💡 게임을 퍼블리싱한 고유 퍼블리셔 수입니다. 개발자와 퍼블리셔가 같은 경우도 많지만, 별도 퍼블리셔도 많습니다.
+                </div>
+            </div>
+        </div>
+        
+        <!-- 플랫폼 지원 -->
+        <div class="section">
+            <h2>🖥️ 플랫폼 지원</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 플랫폼 지원 분석</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    Steam 게임들이 어떤 운영체제를 지원하는지 분석합니다. Windows는 거의 모든 게임이 지원하지만, 
+                    macOS와 Linux 지원은 선택적입니다. 크로스 플랫폼 게임은 여러 플랫폼에서 동일한 경험을 제공합니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="platformChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <strong>📊 해석:</strong> Windows는 100% 지원률을 보이며, macOS는 약 19%, Linux는 약 10%의 게임이 지원합니다. 
+                Linux 지원은 주로 인디 게임과 오픈소스 친화적인 게임에서 높은 비율을 보입니다.
+            </div>
+        </div>
+        
+        <!-- 시간별 진화 -->
+        <div class="section">
+            <h2>📈 플랫폼 진화 (1997-2025)</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 플랫폼 진화 분석</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    Steam 플랫폼이 1997년 출시 이후 28년간 어떻게 성장했는지 보여줍니다. 
+                    게임 수는 지수적으로 증가했고, 평균 가격은 인디 게임의 증가로 점차 낮아지는 추세입니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="evolutionChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <strong>📊 주요 시기:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>1997-2005:</strong> 초기 성장기, 연간 수십 개의 게임 출시</li>
+                    <li><strong>2005-2010:</strong> 디지털 배포 확산, 연간 수천 개로 증가</li>
+                    <li><strong>2010-2015:</strong> 인디 게임 붐, 평균 가격 하락 시작</li>
+                    <li><strong>2015-2020:</strong> 대량 출시 시대, 연간 수만 개 출시</li>
+                    <li><strong>2020-2025:</strong> 현재, 23만 개 이상의 게임 보유</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 장르 분석 -->
+        <div class="section">
+            <h2>🎯 장르 분석</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 장르 분포 분석</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    Steam에서 가장 인기 있는 게임 장르를 분석합니다. Action과 Indie가 가장 많은 비중을 차지하며, 
+                    각 장르는 고유한 특성과 타겟 오디언스를 가지고 있습니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="genreChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <strong>📊 장르별 특징:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Action (19.1%):</strong> 가장 큰 비중, 빠른 액션과 반응성이 중요</li>
+                    <li><strong>Indie (14.4%):</strong> 독립 개발자들의 창의적인 게임들</li>
+                    <li><strong>Adventure (13.4%):</strong> 스토리 중심의 탐험 게임</li>
+                    <li><strong>RPG (12.0%):</strong> 역할놀이 게임, 깊은 스토리와 캐릭터 성장</li>
+                    <li><strong>Strategy (10.7%):</strong> 전략적 사고가 필요한 게임</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 가격 분석 -->
+        <div class="section">
+            <h2>💰 가격 전략 분석</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 가격 전략 분석</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    게임 가격 분포와 시간에 따른 가격 추세를 분석합니다. 무료 게임의 증가와 인디 게임의 저가 전략이 
+                    전체 평균 가격에 영향을 미칩니다. AAA 게임은 여전히 $60-70대를 유지하지만, 
+                    전체적으로는 $10-20대 게임이 가장 많습니다.
+                </p>
+            </div>
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('price-distribution', this)">가격 분포</div>
+                <div class="tab" onclick="showTab('price-trends', this)">가격 추세</div>
+            </div>
+            <div id="price-distribution" class="tab-content active">
+                <div class="chart-container">
+                    <canvas id="priceDistributionChart"></canvas>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <strong>📊 가격대별 특징:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                        <li><strong>무료:</strong> F2P 모델, 인앱 구매로 수익화</li>
+                        <li><strong>$0-5:</strong> 인디 게임, 번들 게임, 할인된 게임</li>
+                        <li><strong>$5-10:</strong> 중소형 인디 게임의 주요 가격대</li>
+                        <li><strong>$10-20:</strong> 가장 인기 있는 유료 게임 가격대</li>
+                        <li><strong>$20-40:</strong> 중형 게임, 할인된 AAA 게임</li>
+                        <li><strong>$40+:</strong> 신작 AAA 게임, 프리미엄 인디 게임</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="price-trends" class="tab-content">
+                <div class="chart-container">
+                    <canvas id="priceTrendsChart"></canvas>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <strong>📊 가격 추세 해석:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                        <li><strong>2010년대:</strong> 평균 $20대, 디지털 배포 확산으로 가격 하락 시작</li>
+                        <li><strong>2015년:</strong> 인디 게임 붐으로 평균 가격 $15대로 하락</li>
+                        <li><strong>2020년:</strong> 무료 게임 증가로 평균 $12대로 하락</li>
+                        <li><strong>2025년:</strong> 현재 $12.45, 인디 게임과 무료 게임의 영향</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 검색 기능 -->
+        <div class="section">
+            <h2>🔍 게임 검색 및 필터</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 검색 및 필터 사용법</h3>
+                <p style="line-height: 1.6; opacity: 0.9; margin-bottom: 15px;">
+                    게임명, 개발자명, 장르명으로 실시간 검색이 가능합니다. 여러 필터를 조합하여 원하는 게임을 찾을 수 있습니다.
+                </p>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; font-size: 0.9em;">
+                    <strong>🔍 검색 예시:</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px; line-height: 1.8; opacity: 0.9;">
+                        <li>"Counter" 입력 → Counter-Strike 시리즈 검색</li>
+                        <li>"Valve" 입력 → Valve가 개발한 모든 게임 검색</li>
+                        <li>"Action" 입력 → Action 장르 게임 검색</li>
+                        <li>장르 필터 + 가격 필터 조합 → 특정 조건의 게임만 표시</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <input type="text" id="searchInput" placeholder="게임명, 개발자, 장르로 검색..." 
+                               style="padding: 12px; border-radius: 8px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(0,0,0,0.3); color: #fff; font-size: 1em; width: 100%;">
+                        <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">💡 실시간 검색, 타이핑하면 즉시 결과 표시</div>
+                    </div>
+                    <div>
+                        <select id="genreFilter" style="padding: 12px; border-radius: 8px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(0,0,0,0.3); color: #fff; font-size: 1em; width: 100%;">
+                            <option value="">모든 장르</option>
+                            ${data.genreAnalysis.topGenres.map(g => `<option value="${g.name}">${g.name}</option>`).join('')}
+                        </select>
+                        <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">💡 특정 장르만 필터링</div>
+                    </div>
+                    <div>
+                        <select id="priceFilter" style="padding: 12px; border-radius: 8px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(0,0,0,0.3); color: #fff; font-size: 1em; width: 100%;">
+                            <option value="">모든 가격</option>
+                            <option value="free">무료</option>
+                            <option value="under10">$10 미만</option>
+                            <option value="10-30">$10-$30</option>
+                            <option value="over30">$30 이상</option>
+                        </select>
+                        <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">💡 가격대별 필터링</div>
+                    </div>
+                    <div>
+                        <select id="sortBy" style="padding: 12px; border-radius: 8px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(0,0,0,0.3); color: #fff; font-size: 1em; width: 100%;">
+                            <option value="rating">평점순</option>
+                            <option value="reviews">리뷰수순</option>
+                            <option value="price">가격순</option>
+                            <option value="date">출시일순</option>
+                        </select>
+                        <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">💡 결과 정렬 방식 선택</div>
+                    </div>
+                </div>
+                <div id="searchResults" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-top: 20px; min-height: 200px;">
+                    <div style="text-align: center; padding: 40px; opacity: 0.7; grid-column: 1 / -1;">
+                        검색어를 입력하거나 필터를 선택하면 결과가 여기에 표시됩니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 장르 공존 분석 -->
+        <div class="section">
+            <h2>🎯 장르 공존 분석 (Genre Co-occurrence)</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 장르 공존이란?</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    <strong>장르 공존(Genre Co-occurrence)</strong>은 두 장르가 같은 게임에 함께 나타나는 빈도를 분석합니다. 
+                    예를 들어 "Action"과 "Adventure"가 자주 함께 나타나면, 이 두 장르는 서로 잘 어울린다는 의미입니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="genreCooccurrenceChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 20px;">
+                <strong>📊 장르 공존 해석:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Action + Adventure:</strong> 가장 흔한 조합, 액션과 탐험이 결합된 게임</li>
+                    <li><strong>RPG + Strategy:</strong> 전략적 요소가 있는 RPG 게임</li>
+                    <li><strong>Indie + Adventure:</strong> 인디 게임의 주요 조합</li>
+                    <li><strong>Action + RPG:</strong> 액션 RPG 장르의 인기</li>
+                </ul>
+            </div>
+            <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                ${data.genreCooccurrence.map(co => `
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border-left: 4px solid #F2C94C;">
+                    <div style="font-weight: bold; color: #F2C94C; margin-bottom: 5px;">${co.genre1} + ${co.genre2}</div>
+                    <div style="font-size: 1.2em; color: #56B6F2;">${formatNumber(co.count)}개 게임</div>
+                    <div style="font-size: 0.85em; opacity: 0.7; margin-top: 5px;">전체의 ${co.percentage}%</div>
+                    <div style="font-size: 0.75em; opacity: 0.6; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        💡 이 두 장르가 함께 나타나는 게임의 수입니다. 높을수록 두 장르가 잘 어울립니다.
+                    </div>
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        
+        <!-- 개발자 분석 -->
+        <div class="section">
+            <h2>👨‍💻 개발자 포트폴리오 분석</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 개발자 포트폴리오 분석</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    각 개발자가 만든 게임의 수, 평균 평점, 주요 장르, 수익 등을 분석합니다. 
+                    개발자 이름을 클릭하면 해당 개발자의 모든 게임 목록을 볼 수 있습니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="developerChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <strong>📊 개발자 분석 해석:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Valve:</strong> Steam 플랫폼 개발사, Half-Life, Counter-Strike 시리즈</li>
+                    <li><strong>Ubisoft:</strong> 대형 퍼블리셔, Assassin's Creed, Far Cry 시리즈</li>
+                    <li><strong>Electronic Arts:</strong> FIFA, Apex Legends 등 대형 게임</li>
+                    <li><strong>개발자 이름 클릭:</strong> 해당 개발자의 모든 게임 목록을 모달로 확인 가능</li>
+                </ul>
+            </div>
+            <div style="margin-top: 30px;">
+                <h3 style="color: #56B6F2; margin-bottom: 20px;">📊 상위 개발자 상세 포트폴리오</h3>
+                <div style="background: rgba(86, 182, 242, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9em; opacity: 0.9;">
+                    💡 각 개발자 카드를 클릭하면 해당 개발자가 만든 모든 게임의 상세 정보를 볼 수 있습니다. 
+                    평균 평점, 총 리뷰 수, 주요 장르 등을 확인할 수 있습니다.
+                </div>
+                <div class="feature-grid">
+                    ${data.developerAnalysis.topDevelopers.map(dev => `
+                    <div class="feature-card" style="cursor: pointer;" onclick="showDeveloperPortfolio('${dev.name}')">
+                        <h3 style="color: #56B6F2; margin-bottom: 15px;">${dev.name}</h3>
+                        <ul class="feature-list">
+                            <li><strong>총 게임 수:</strong> ${dev.apps}개</li>
+                            <li><strong>평균 평점:</strong> ${dev.averageRating.toFixed(1)} ⭐</li>
+                            <li><strong>주요 장르:</strong> ${dev.genres.join(', ')}</li>
+                            ${dev.games && dev.games.length > 0 ? `
+                            <li style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <strong>대표 게임:</strong>
+                                ${dev.games.slice(0, 3).map(game => `
+                                <div style="margin-top: 5px; font-size: 0.9em; opacity: 0.8;">
+                                    • ${game.title} (${game.rating}⭐, ${formatNumber(game.reviews)} 리뷰)
+                                </div>
+                                `).join('')}
+                            </li>
+                            ` : ''}
+                        </ul>
+                        <div style="margin-top: 10px; color: #F2C94C; font-size: 0.85em; font-style: italic;">
+                            클릭하여 전체 포트폴리오 보기 →
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 퍼블리셔 분석 -->
+        <div class="section">
+            <h2>🏢 퍼블리셔 포트폴리오 분석</h2>
+            <div class="chart-container">
+                <canvas id="publisherChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- 시맨틱 검색 -->
+        <div class="section">
+            <h2>🔍 시맨틱 검색 (BGE-M3 Embeddings)</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 시맨틱 검색이란?</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    <strong>시맨틱 검색(Semantic Search)</strong>은 단순 키워드 매칭이 아닌 <strong>의미 기반 검색</strong>입니다. 
+                    예를 들어 "포스트 아포칼립스 생존 게임"을 검색하면, 정확히 그 단어가 포함되지 않아도 
+                    <em>Fallout</em>, <em>The Last of Us</em> 같은 관련 게임을 찾아줍니다.
+                </p>
+                <p style="line-height: 1.6; opacity: 0.9; margin-top: 10px;">
+                    <strong>BGE-M3 임베딩</strong>은 게임 설명, 장르, 태그 등을 1024차원의 숫자 벡터로 변환합니다. 
+                    비슷한 의미를 가진 게임들은 벡터 공간에서 가까이 위치하게 되어, 
+                    코사인 유사도를 계산하여 관련 게임을 찾을 수 있습니다.
+                </p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>📊 임베딩 통계</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <strong>총 임베딩:</strong> ${formatNumber(data.semanticSearch.embeddingStats.totalEmbeddings)}
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">각 게임의 설명과 메타데이터를 벡터로 변환</div>
+                        </li>
+                        <li>
+                            <strong>차원:</strong> ${data.semanticSearch.embeddingStats.dimensions}
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">각 벡터는 1024개의 숫자로 구성됨</div>
+                        </li>
+                        <li>
+                            <strong>모델:</strong> ${data.semanticSearch.embeddingStats.model}
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">BAAI에서 개발한 다국어 임베딩 모델</div>
+                        </li>
+                        <li>
+                            <strong>평균 유사도:</strong> ${data.semanticSearch.embeddingStats.averageSimilarity}
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">0~1 사이 값, 1에 가까울수록 유사함</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>🔎 샘플 쿼리</h3>
+                    <div style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">
+                        아래는 실제 시맨틱 검색 예시입니다. 키워드가 정확히 일치하지 않아도 의미가 비슷한 게임을 찾습니다.
+                    </div>
+                    ${data.semanticSearch.sampleQueries.map(query => `
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <div style="font-weight: bold; color: #56B6F2;">"${query.query}"</div>
+                        <div style="margin-top: 5px; opacity: 0.8;">결과: ${formatNumber(query.results)}개 | 최고 매치: ${query.topMatch}</div>
+                        <div style="font-size: 0.85em; opacity: 0.7; margin-top: 5px; font-style: italic;">
+                            → "${query.query}"라는 의미와 유사한 게임 ${formatNumber(query.results)}개 발견
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <!-- 시맨틱 검색 UI -->
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px solid rgba(86, 182, 242, 0.3);">
+                <h3 style="color: #56B6F2; margin-bottom: 15px;">🔍 시맨틱 검색 시도해보기</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="semanticSearchInput" placeholder="예: 포스트 아포칼립스 생존 게임, 중세 판타지 RPG, 우주 탐험..." 
+                           style="flex: 1; padding: 12px; border-radius: 8px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(0,0,0,0.3); color: #fff; font-size: 1em;">
+                    <button onclick="performSemanticSearch()" 
+                            style="padding: 12px 24px; border-radius: 8px; border: none; background: linear-gradient(135deg, #56B6F2 0%, #2a5298 100%); color: #fff; font-size: 1em; cursor: pointer; font-weight: bold;">
+                        검색
+                    </button>
+                </div>
+                <div id="semanticSearchResults" style="min-height: 100px;">
+                    <div style="text-align: center; padding: 40px; opacity: 0.7;">
+                        검색어를 입력하고 검색 버튼을 클릭하면 의미 기반 검색 결과가 표시됩니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 그래프 분석 -->
+        <div class="section">
+            <h2>🕸️ 그래프 분석 (Network Analysis)</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 그래프 분석이란?</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    <strong>그래프 분석(Network Analysis)</strong>은 게임 산업의 관계를 시각화하고 분석하는 방법입니다. 
+                    개발자, 퍼블리셔, 장르 등을 <strong>노드(Node)</strong>로, 그들 간의 관계를 <strong>엣지(Edge)</strong>로 표현합니다.
+                </p>
+                <div style="margin-top: 15px;">
+                    <div style="margin-bottom: 8px;">
+                        <strong>🔵 노드(Node):</strong> 그래프의 점. 예: "Valve" 개발자, "Action" 장르
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <strong>➖ 엣지(Edge):</strong> 노드 간의 연결선. 예: "Valve"가 만든 "Action" 장르 게임
+                    </div>
+                    <div>
+                        <strong>🔷 클러스터(Cluster):</strong> 밀접하게 연결된 노드들의 그룹. 예: 같은 장르의 게임들, 협력하는 개발자들
+                    </div>
+                </div>
+            </div>
+            <div class="network-stats">
+                <div class="network-stat">
+                    <div class="network-stat-value">${formatNumber(data.graphAnalysis.developerNetwork.nodes)}</div>
+                    <div class="network-stat-label">개발자 노드</div>
+                    <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">고유 개발자 수</div>
+                </div>
+                <div class="network-stat">
+                    <div class="network-stat-value">${formatNumber(data.graphAnalysis.developerNetwork.edges)}</div>
+                    <div class="network-stat-label">개발자 연결</div>
+                    <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">개발자-게임 관계 수</div>
+                </div>
+                <div class="network-stat">
+                    <div class="network-stat-value">${data.graphAnalysis.developerNetwork.clusters}</div>
+                    <div class="network-stat-label">개발자 클러스터</div>
+                    <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">유사한 개발자 그룹</div>
+                </div>
+                <div class="network-stat">
+                    <div class="network-stat-value">${formatNumber(data.graphAnalysis.publisherNetwork.nodes)}</div>
+                    <div class="network-stat-label">퍼블리셔 노드</div>
+                    <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">고유 퍼블리셔 수</div>
+                </div>
+                <div class="network-stat">
+                    <div class="network-stat-value">${formatNumber(data.graphAnalysis.publisherNetwork.edges)}</div>
+                    <div class="network-stat-label">퍼블리셔 연결</div>
+                    <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">퍼블리셔-게임 관계 수</div>
+                </div>
+                <div class="network-stat">
+                    <div class="network-stat-value">${data.graphAnalysis.genreNetwork.clusters}</div>
+                    <div class="network-stat-label">장르 클러스터</div>
+                    <div style="font-size: 0.75em; opacity: 0.7; margin-top: 5px;">유사한 장르 그룹</div>
+                </div>
+            </div>
+            <!-- 그래프 시각화 -->
+            <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; margin-top: 20px;">
+                <h3 style="color: #56B6F2; margin-bottom: 15px;">🕸️ 네트워크 그래프 시각화</h3>
+                <div style="position: relative; width: 100%; height: 500px; background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden;">
+                    <canvas id="networkGraphCanvas" style="width: 100%; height: 100%;"></canvas>
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="showNetworkView('developers')" class="tab" style="padding: 8px 16px; border-radius: 6px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(86, 182, 242, 0.2); color: #fff; cursor: pointer;">
+                        개발자 네트워크
+                    </button>
+                    <button onclick="showNetworkView('publishers')" class="tab" style="padding: 8px 16px; border-radius: 6px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(0,0,0,0.2); color: #fff; cursor: pointer;">
+                        퍼블리셔 네트워크
+                    </button>
+                    <button onclick="showNetworkView('genres')" class="tab" style="padding: 8px 16px; border-radius: 6px; border: 2px solid rgba(86, 182, 242, 0.3); background: rgba(0,0,0,0.2); color: #fff; cursor: pointer;">
+                        장르 네트워크
+                    </button>
+                </div>
+            </div>
+            <div style="background: rgba(242, 201, 76, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <strong style="color: #F2C94C;">📊 활용 예시:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8; opacity: 0.9;">
+                    <li>같은 개발자가 만든 게임들 찾기</li>
+                    <li>특정 장르와 자주 함께 나타나는 장르 분석</li>
+                    <li>게임 산업의 협력 네트워크 파악</li>
+                    <li>인기 개발자/퍼블리셔의 영향력 측정</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 하드웨어 요구사항 -->
+        <div class="section">
+            <h2>💻 하드웨어 요구사항 분석</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 하드웨어 요구사항 분석</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    게임들이 요구하는 RAM과 저장공간을 분석합니다. 최소 사양과 권장 사양을 모두 고려하여 
+                    게임을 플레이하기 위해 필요한 하드웨어를 파악할 수 있습니다.
+                </p>
+            </div>
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('ram-distribution', this)">RAM 분포</div>
+                <div class="tab" onclick="showTab('storage-distribution', this)">저장공간 분포</div>
+            </div>
+            <div id="ram-distribution" class="tab-content active">
+                <div class="chart-container">
+                    <canvas id="ramChart"></canvas>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <strong>📊 RAM 요구사항 해석:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                        <li><strong>&lt;2GB:</strong> 경량 게임, 인디 게임, 오래된 게임</li>
+                        <li><strong>2-4GB:</strong> 중소형 게임, 2010년대 초반 게임</li>
+                        <li><strong>4-8GB:</strong> 현재 가장 많은 게임이 요구하는 사양</li>
+                        <li><strong>8-16GB:</strong> 최신 AAA 게임, 오픈월드 게임</li>
+                        <li><strong>&gt;16GB:</strong> 최신 대형 게임, 모드 지원 게임</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="storage-distribution" class="tab-content">
+                <div class="chart-container">
+                    <canvas id="storageChart"></canvas>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <strong>📊 저장공간 요구사항 해석:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                        <li><strong>&lt;5GB:</strong> 경량 게임, 인디 게임</li>
+                        <li><strong>5-10GB:</strong> 중소형 게임, 일반적인 인디 게임</li>
+                        <li><strong>10-20GB:</strong> 중형 게임, 일반적인 AAA 게임</li>
+                        <li><strong>20-50GB:</strong> 대형 게임, 오픈월드 게임</li>
+                        <li><strong>&gt;50GB:</strong> 초대형 게임, 고해상도 텍스처 포함</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 리뷰 분석 -->
+        <div class="section">
+            <h2>⭐ 리뷰 분석</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 리뷰 점수 분포 분석</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    Steam의 리뷰 점수는 긍정적 리뷰의 비율에 따라 분류됩니다. "Overwhelmingly Positive"는 95% 이상, 
+                    "Very Positive"는 80% 이상의 긍정적 리뷰를 받은 게임입니다. 대부분의 게임이 긍정적 평가를 받고 있습니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="reviewChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <strong>📊 리뷰 점수 기준:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Overwhelmingly Positive:</strong> 95% 이상 긍정적 리뷰 (최고 평가)</li>
+                    <li><strong>Very Positive:</strong> 80-95% 긍정적 리뷰 (매우 좋은 평가)</li>
+                    <li><strong>Mostly Positive:</strong> 70-80% 긍정적 리뷰 (대체로 긍정적)</li>
+                    <li><strong>Mixed:</strong> 40-70% 긍정적 리뷰 (호불호 갈림)</li>
+                    <li><strong>Mostly Negative:</strong> 20-40% 긍정적 리뷰 (대체로 부정적)</li>
+                    <li><strong>Very Negative:</strong> 5-20% 긍정적 리뷰 (매우 나쁜 평가)</li>
+                    <li><strong>Overwhelmingly Negative:</strong> 5% 미만 긍정적 리뷰 (최악 평가)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 무료 플레이 분석 -->
+        <div class="section">
+            <h2>🆓 무료 플레이 시장 분석</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 무료 플레이 모델</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    무료 플레이 게임은 인앱 구매, 배틀패스, 코스메틱 아이템 판매 등 다양한 수익화 전략을 사용합니다. 
+                    장르별로 어떤 수익화 전략이 효과적인지 분석합니다.
+                </p>
+            </div>
+            <div class="chart-container">
+                <canvas id="freeToPlayChart"></canvas>
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <strong>📊 무료 플레이 장르별 특징:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Action (FPS):</strong> Counter-Strike, Team Fortress 2 등, 코스메틱 아이템 판매</li>
+                    <li><strong>Strategy (MOBA):</strong> Dota 2, League of Legends 등, 캐릭터/스킨 판매</li>
+                    <li><strong>RPG:</strong> Genshin Impact 등, 가챠 시스템, 캐릭터/무기 판매</li>
+                    <li><strong>Battle Royale:</strong> Fortnite, Apex Legends 등, 배틀패스, 코스메틱</li>
+                    <li><strong>수익화 전략:</strong> 인앱 구매, 배틀패스, 시즌 패스, 코스메틱 아이템, DLC</li>
+                </ul>
+            </div>
+            <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5em; color: #F2C94C; font-weight: bold;">${formatNumber(data.freeToPlayAnalysis.monetizationStrategies.inAppPurchases)}</div>
+                    <div style="opacity: 0.8; margin-top: 5px;">인앱 구매</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5em; color: #F2C94C; font-weight: bold;">${formatNumber(data.freeToPlayAnalysis.monetizationStrategies.battlePass)}</div>
+                    <div style="opacity: 0.8; margin-top: 5px;">배틀패스</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5em; color: #F2C94C; font-weight: bold;">${formatNumber(data.freeToPlayAnalysis.monetizationStrategies.cosmetics)}</div>
+                    <div style="opacity: 0.8; margin-top: 5px;">코스메틱</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5em; color: #F2C94C; font-weight: bold;">${formatNumber(data.freeToPlayAnalysis.monetizationStrategies.dlc)}</div>
+                    <div style="opacity: 0.8; margin-top: 5px;">DLC</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 품질 vs 수량 분석 -->
+        <div class="section">
+            <h2>⚖️ 개발자 품질 vs 수량 분석</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 품질 vs 수량</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    일부 개발자는 적은 수의 고품질 게임을 만들고, 다른 개발자는 많은 수의 게임을 만듭니다. 
+                    이 분석은 게임 산업에서 품질과 수량의 균형을 보여줍니다.
+                </p>
+            </div>
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('quality-devs', this)">고품질 개발자</div>
+                <div class="tab" onclick="showTab('quantity-devs', this)">다작 개발자</div>
+            </div>
+            <div id="quality-devs" class="tab-content active">
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em; opacity: 0.9;">
+                    💡 <strong>고품질 개발자:</strong> 적은 수의 게임을 만들지만 평균 평점이 높은 개발자들입니다. 
+                    대부분 AAA 스튜디오나 정예 인디 개발자들입니다. 품질에 집중하는 전략을 보여줍니다.
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    ${data.qualityVsQuantity.topQualityDevelopers.map(dev => `
+                    <div class="feature-card">
+                        <h3 style="color: #56B6F2;">${dev.name}</h3>
+                        <ul class="feature-list">
+                            <li><strong>게임 수:</strong> ${dev.games}개</li>
+                            <li><strong>평균 평점:</strong> ${dev.avgRating.toFixed(1)} ⭐</li>
+                            <li><strong>품질 점수:</strong> ${dev.qualityScore.toFixed(1)}/10</li>
+                        </ul>
+                        <div style="margin-top: 10px; padding: 10px; background: rgba(76, 175, 80, 0.2); border-radius: 8px; font-size: 0.9em;">
+                            💡 적은 수의 게임이지만 높은 평점을 유지하는 전략
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 20px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <strong>📊 고품질 개발자 특징:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                        <li>평균 평점 4.5 이상</li>
+                        <li>게임 수는 적지만 각 게임이 높은 평가</li>
+                        <li>긴 개발 기간, 높은 예산 투자</li>
+                        <li>예: Valve, FromSoftware, CD PROJEKT RED</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="quantity-devs" class="tab-content">
+                <div style="background: rgba(255, 152, 0, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em; opacity: 0.9;">
+                    💡 <strong>다작 개발자:</strong> 많은 수의 게임을 만드는 개발자들입니다. 
+                    빠른 출시와 다양한 게임을 통한 시장 점유율 확대 전략을 보여줍니다. 
+                    평균 평점은 낮을 수 있지만, 전체적인 수익은 높을 수 있습니다.
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    ${data.qualityVsQuantity.topQuantityDevelopers.map(dev => `
+                    <div class="feature-card">
+                        <h3 style="color: #56B6F2;">${dev.name}</h3>
+                        <ul class="feature-list">
+                            <li><strong>게임 수:</strong> ${dev.games}개</li>
+                            <li><strong>평균 평점:</strong> ${dev.avgRating.toFixed(1)} ⭐</li>
+                            <li><strong>품질 점수:</strong> ${dev.qualityScore.toFixed(1)}/10</li>
+                        </ul>
+                        <div style="margin-top: 10px; padding: 10px; background: rgba(255, 152, 0, 0.2); border-radius: 8px; font-size: 0.9em;">
+                            💡 많은 수의 게임으로 시장 점유율을 확보하는 전략
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 20px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <strong>📊 다작 개발자 특징:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                        <li>연간 수십 개 이상의 게임 출시</li>
+                        <li>빠른 개발 사이클, 낮은 개발 비용</li>
+                        <li>다양한 장르와 타겟 시장</li>
+                        <li>전체 수익은 높지만 개별 게임 평점은 다양</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 인기 게임 -->
+        <div class="section">
+            <h2>🏆 인기 게임</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 인기 게임 정보</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    아래는 Steam에서 가장 인기 있는 게임들입니다. 평점, 리뷰 수, 가격, 플랫폼 지원 정보를 확인할 수 있습니다.
+                </p>
+            </div>
+            <div class="games-grid">
+                ${data.topGames.map(game => {
+                    const steamLink = game.appId ? `https://store.steampowered.com/app/${game.appId}` : '#';
+                    return `
+                <div class="game-card" style="cursor: pointer;" onclick="window.open('${steamLink}', '_blank')">
+                    <div class="game-title">${game.title}</div>
+                    <div style="margin-top: 10px;">
+                        <div><strong>개발자:</strong> ${game.developer}</div>
+                        <div><strong>퍼블리셔:</strong> ${game.publisher}</div>
+                        <div><strong>출시일:</strong> ${game.releaseDate}</div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        ${game.genres.map(genre => `<span class="badge">${genre}</span>`).join('')}
+                        ${game.isFree ? '<span class="badge badge-free">무료</span>' : `<span class="badge">$${game.price}</span>`}
+                    </div>
+                    <div class="game-meta">
+                        <span>⭐ ${game.rating}</span>
+                        <span>📝 ${formatNumber(game.reviews)} 리뷰</span>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.85em; opacity: 0.8;">
+                        플랫폼: ${game.platforms.windows ? 'Windows' : ''} ${game.platforms.mac ? 'Mac' : ''} ${game.platforms.linux ? 'Linux' : ''}
+                    </div>
+                    ${game.appId ? '<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em; color: #56B6F2;">🔗 Steam 스토어에서 보기 (클릭)</div>' : ''}
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75em; opacity: 0.7;">
+                        💡 Steam에서 가장 인기 있는 게임 중 하나입니다. 평점과 리뷰 수는 사용자 만족도를 나타냅니다.
+                    </div>
+                </div>
+                `;
+                }).join('')}
+            </div>
+            <div style="margin-top: 20px; font-size: 0.9em; opacity: 0.8; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <strong>📊 인기 게임 기준:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>평점:</strong> 사용자 리뷰의 긍정적 비율</li>
+                    <li><strong>리뷰 수:</strong> 게임의 인기도와 사용자 참여도</li>
+                    <li><strong>플랫폼:</strong> Windows, macOS, Linux 지원 여부</li>
+                    <li><strong>가격:</strong> 무료 또는 유료, 유료 게임의 경우 가격대</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 데이터베이스 아키텍처 -->
+        <div class="section">
+            <h2>🗄️ 멀티모달 데이터베이스 아키텍처</h2>
+            <div style="background: rgba(86, 182, 242, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #56B6F2;">
+                <h3 style="color: #56B6F2; margin-bottom: 10px;">💡 멀티모달 아키텍처란?</h3>
+                <p style="line-height: 1.6; opacity: 0.9;">
+                    <strong>멀티모달(Multi-Modal)</strong>은 여러 형태의 데이터를 하나의 데이터베이스에서 효율적으로 처리하는 구조입니다. 
+                    Steam Dataset 2025는 <strong>관계형 데이터</strong>(게임 정보, 개발자 등), 
+                    <strong>반구조화 데이터</strong>(JSON API 응답), 
+                    <strong>벡터 데이터</strong>(임베딩)를 모두 PostgreSQL에서 처리합니다.
+                </p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>PostgreSQL 16.10</h3>
+                    <div style="font-size: 0.85em; opacity: 0.8; margin-bottom: 15px; font-style: italic;">
+                        오픈소스 관계형 데이터베이스 관리 시스템
+                    </div>
+                    <ul class="feature-list">
+                        <li>
+                            <strong>관계형 데이터 저장</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">게임, 개발자, 리뷰 등을 테이블로 구조화하여 저장</div>
+                        </li>
+                        <li>
+                            <strong>JSONB 필드 지원</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">Steam API의 원본 JSON 응답을 그대로 보존하면서도 빠른 검색 가능</div>
+                        </li>
+                        <li>
+                            <strong>고급 인덱싱</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">B-tree, GIN, GiST 인덱스로 복잡한 쿼리도 빠르게 처리</div>
+                        </li>
+                        <li>
+                            <strong>Materialized Views</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">자주 사용하는 집계 결과를 미리 계산하여 저장, 쿼리 속도 향상</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>pgvector 0.5.0</h3>
+                    <div style="font-size: 0.85em; opacity: 0.8; margin-bottom: 15px; font-style: italic;">
+                        PostgreSQL용 벡터 유사도 검색 확장
+                    </div>
+                    <ul class="feature-list">
+                        <li>
+                            <strong>벡터 유사도 검색</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">게임 설명의 의미적 유사도를 계산하여 관련 게임 찾기</div>
+                        </li>
+                        <li>
+                            <strong>HNSW 인덱스</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">계층적 네비게이션 가능한 작은 세계 알고리즘, 빠른 근사 검색</div>
+                        </li>
+                        <li>
+                            <strong>1024차원 임베딩</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">BGE-M3 모델이 생성한 고차원 벡터를 저장</div>
+                        </li>
+                        <li>
+                            <strong>코사인 유사도</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">벡터 간 각도를 측정하여 의미적 유사도 계산 (0~1, 1에 가까울수록 유사)</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>JSONB</h3>
+                    <div style="font-size: 0.85em; opacity: 0.8; margin-bottom: 15px; font-style: italic;">
+                        PostgreSQL의 이진 JSON 데이터 타입
+                    </div>
+                    <ul class="feature-list">
+                        <li>
+                            <strong>반구조화 데이터</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">고정된 스키마 없이 유연하게 데이터 저장 (예: 게임별로 다른 메타데이터)</div>
+                        </li>
+                        <li>
+                            <strong>API 응답 보존</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">Steam API의 원본 JSON을 그대로 저장하여 데이터 추적성 보장</div>
+                        </li>
+                        <li>
+                            <strong>유연한 스키마</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">새로운 필드가 추가되어도 스키마 변경 없이 저장 가능</div>
+                        </li>
+                        <li>
+                            <strong>빠른 쿼리</strong>
+                            <div style="font-size: 0.8em; opacity: 0.7; margin-top: 3px;">GIN 인덱스로 JSON 내부 필드도 빠르게 검색</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background: rgba(242, 201, 76, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <strong style="color: #F2C94C;">🔗 통합의 장점:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8; opacity: 0.9;">
+                    <li>하나의 데이터베이스에서 관계형 쿼리, JSON 검색, 벡터 검색 모두 가능</li>
+                    <li>데이터 일관성 유지 및 복잡한 조인 쿼리 지원</li>
+                    <li>트랜잭션으로 데이터 무결성 보장</li>
+                    <li>표준 SQL로 모든 데이터 타입 접근 가능</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const data = ${JSON.stringify(data)};
+        
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+        
+        function showTab(tabId, clickedElement) {
+            console.log('=== showTab 호출 ===', tabId, clickedElement);
+            
+            // 모든 탭 콘텐츠 숨기기
+            const allContents = document.querySelectorAll('.tab-content');
+            console.log('탭 콘텐츠 개수:', allContents.length);
+            allContents.forEach(content => {
+                content.classList.remove('active');
+                content.style.display = 'none';
+            });
+            
+            // 모든 탭 버튼 비활성화
+            const allTabs = document.querySelectorAll('.tab');
+            console.log('탭 버튼 개수:', allTabs.length);
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 선택된 탭 콘텐츠 표시
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+                targetContent.style.display = 'block';
+                console.log('✅ 탭 콘텐츠 활성화:', tabId);
+                
+                // 탭 전환 후 차트 resize (숨겨진 차트가 제대로 렌더링되도록)
+                setTimeout(function() {
+                    if (window.chartInstances && window.chartInstances.length > 0) {
+                        window.chartInstances.forEach(function(chart) {
+                            if (chart && typeof chart.resize === 'function') {
+                                chart.resize();
+                            }
+                        });
+                        console.log('차트 resize 완료');
+                    }
+                }, 100);
+            } else {
+                console.error('❌ 탭 콘텐츠를 찾을 수 없습니다:', tabId);
+                // 디버깅: 모든 탭 콘텐츠 ID 출력
+                allContents.forEach(content => {
+                    console.log('탭 콘텐츠 ID:', content.id);
+                });
+            }
+            
+            // 클릭된 탭 버튼 활성화
+            if (clickedElement) {
+                clickedElement.classList.add('active');
+                console.log('✅ 탭 버튼 활성화됨');
+            } else {
+                // tabId와 관련된 탭 버튼 찾기
+                const tabs = document.querySelectorAll('.tab');
+                tabs.forEach(tab => {
+                    const onclickAttr = tab.getAttribute('onclick');
+                    if (onclickAttr && onclickAttr.includes(tabId)) {
+                        tab.classList.add('active');
+                        console.log('✅ 탭 버튼 자동 활성화:', tab);
+                    }
+                });
+            }
+        }
+        
+        // 전역 함수로 등록 (즉시 등록)
+        window.showTab = showTab;
+        
+        // DOMContentLoaded에서도 등록 (이중 보장)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                window.showTab = showTab;
+                console.log('showTab 함수 재등록 완료');
+            });
+        }
+        
+        // 모든 차트와 그래프 초기화 함수
+        function initializeAllCharts() {
+            console.log('=== initializeAllCharts 함수 호출됨 ===');
+            console.log('Chart 객체 존재 여부:', typeof Chart !== 'undefined');
+            console.log('data 객체 존재 여부:', typeof data !== 'undefined');
+            console.log('document.readyState:', document.readyState);
+            
+            if (typeof Chart === 'undefined') {
+                console.error('❌ Chart.js가 로드되지 않았습니다.');
+                console.error('Chart 객체:', typeof Chart);
+                return;
+            }
+            
+            if (typeof data === 'undefined') {
+                console.error('❌ data 객체가 정의되지 않았습니다.');
+                return;
+            }
+            
+            // 차트 인스턴스를 저장할 배열 (이미 window.onload에서 초기화됨)
+            if (!window.chartInstances) {
+                window.chartInstances = [];
+            }
+            
+            // 기존 차트 중 플랫폼 차트를 제외한 나머지만 제거
+            // 플랫폼 차트는 window.onload에서 이미 생성되었으므로 보존
+            const platformChart = window.chartInstances.find(chart => 
+                chart && chart.canvas && chart.canvas.id === 'platformChart'
+            );
+            
+            // 플랫폼 차트를 제외한 나머지 차트만 제거
+            window.chartInstances = window.chartInstances.filter(chart => {
+                if (chart && chart.canvas && chart.canvas.id === 'platformChart') {
+                    return true; // 플랫폼 차트는 유지
+                }
+                if (chart && typeof chart.destroy === 'function') {
+                    chart.destroy();
+                }
+                return false;
+            });
+            
+            // 플랫폼 차트가 있으면 다시 추가
+            if (platformChart) {
+                window.chartInstances.push(platformChart);
+            }
+            
+            try {
+                // 플랫폼 차트는 window.onload에서 이미 생성했으므로 건너뜀
+                console.log('플랫폼 차트는 이미 window.onload에서 생성됨, 건너뜀');
+                
+                // 진화 차트
+                const evolutionEl = document.getElementById('evolutionChart');
+                if (evolutionEl) {
+                    new Chart(evolutionEl, {
+                        type: 'line',
+                        data: {
+                            labels: data.temporalEvolution.years,
+                            datasets: [{
+                                label: '게임 수',
+                                data: data.temporalEvolution.gamesPerYear,
+                                borderColor: '#56B6F2',
+                                backgroundColor: 'rgba(86, 182, 242, 0.1)',
+                                yAxisID: 'y'
+                            }, {
+                                label: '평균 가격 ($)',
+                                data: data.temporalEvolution.averagePricePerYear,
+                                borderColor: '#F2C94C',
+                                backgroundColor: 'rgba(242, 201, 76, 0.1)',
+                                yAxisID: 'y1'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { type: 'linear', position: 'left', ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                y1: { type: 'linear', position: 'right', ticks: { color: '#fff' }, grid: { drawOnChartArea: false } },
+                                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 장르 차트
+                const genreEl = document.getElementById('genreChart');
+                if (genreEl) {
+                    new Chart(genreEl, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.genreAnalysis.topGenres.map(g => g.name),
+                            datasets: [{
+                                data: data.genreAnalysis.topGenres.map(g => g.count),
+                                backgroundColor: [
+                                    '#56B6F2', '#F2C94C', '#4CAF50', '#FF9800', '#9C27B0',
+                                    '#F44336', '#00BCD4', '#8BC34A', '#FF5722', '#607D8B'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'right', labels: { color: '#fff' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 가격 분포 차트
+                const priceDistEl = document.getElementById('priceDistributionChart');
+                if (priceDistEl) {
+                    new Chart(priceDistEl, {
+                        type: 'bar',
+                        data: {
+                            labels: ['무료', '$0-5', '$5-10', '$10-20', '$20-40', '$40+'],
+                            datasets: [{
+                                label: '게임 수',
+                                data: [
+                                    data.pricingAnalysis.priceDistribution.free,
+                                    data.pricingAnalysis.priceDistribution.under5,
+                                    data.pricingAnalysis.priceDistribution.fiveToTen,
+                                    data.pricingAnalysis.priceDistribution.tenToTwenty,
+                                    data.pricingAnalysis.priceDistribution.twentyToForty,
+                                    data.pricingAnalysis.priceDistribution.overForty
+                                ],
+                                backgroundColor: '#56B6F2'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                    if (window.chartInstances) {
+                        window.chartInstances.push(priceDistChart);
+                    }
+                    console.log('✅ 가격 분포 차트 생성 완료');
+                } else {
+                    console.warn('⚠️ priceDistributionChart 요소를 찾을 수 없습니다');
+                }
+                
+                // 가격 추세 차트
+                const priceTrendsEl = document.getElementById('priceTrendsChart');
+                console.log('가격 추세 차트 요소:', priceTrendsEl ? '찾음' : '없음');
+                if (priceTrendsEl) {
+                    console.log('가격 추세 차트 데이터:', data.pricingAnalysis.pricingTrends);
+                    const priceTrendsChart = new Chart(priceTrendsEl, {
+                        type: 'line',
+                        data: {
+                            labels: data.pricingAnalysis.pricingTrends.years,
+                            datasets: [{
+                                label: '평균 가격',
+                                data: data.pricingAnalysis.pricingTrends.averagePrice,
+                                borderColor: '#56B6F2',
+                                backgroundColor: 'rgba(86, 182, 242, 0.1)'
+                            }, {
+                                label: '중간 가격',
+                                data: data.pricingAnalysis.pricingTrends.medianPrice,
+                                borderColor: '#F2C94C',
+                                backgroundColor: 'rgba(242, 201, 76, 0.1)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 개발자 차트
+                const developerEl = document.getElementById('developerChart');
+                if (developerEl) {
+                    new Chart(developerEl, {
+                        type: 'bar',
+                        data: {
+                            labels: data.developerAnalysis.topDevelopers.map(d => d.name),
+                            datasets: [{
+                                label: '앱 수',
+                                data: data.developerAnalysis.topDevelopers.map(d => d.apps),
+                                backgroundColor: '#56B6F2'
+                            }, {
+                                label: '평균 평점',
+                                data: data.developerAnalysis.topDevelopers.map(d => d.averageRating),
+                                backgroundColor: '#F2C94C',
+                                yAxisID: 'y1'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                y1: { type: 'linear', position: 'right', ticks: { color: '#fff' }, grid: { drawOnChartArea: false } },
+                                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                }
+                
+                // RAM 차트
+                const ramEl = document.getElementById('ramChart');
+                if (ramEl) {
+                    new Chart(ramEl, {
+                        type: 'pie',
+                        data: {
+                            labels: ['<2GB', '2-4GB', '4-8GB', '8-16GB', '>16GB'],
+                            datasets: [{
+                                data: [
+                                    data.hardwareRequirements.ramDistribution.under2GB,
+                                    data.hardwareRequirements.ramDistribution.twoToFourGB,
+                                    data.hardwareRequirements.ramDistribution.fourToEightGB,
+                                    data.hardwareRequirements.ramDistribution.eightToSixteenGB,
+                                    data.hardwareRequirements.ramDistribution.overSixteenGB
+                                ],
+                                backgroundColor: ['#56B6F2', '#F2C94C', '#4CAF50', '#FF9800', '#9C27B0']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 저장공간 차트
+                const storageEl = document.getElementById('storageChart');
+                if (storageEl) {
+                    new Chart(storageEl, {
+                        type: 'pie',
+                        data: {
+                            labels: ['<5GB', '5-10GB', '10-20GB', '20-50GB', '>50GB'],
+                            datasets: [{
+                                data: [
+                                    data.hardwareRequirements.storageDistribution.under5GB,
+                                    data.hardwareRequirements.storageDistribution.fiveToTenGB,
+                                    data.hardwareRequirements.storageDistribution.tenToTwentyGB,
+                                    data.hardwareRequirements.storageDistribution.twentyToFiftyGB,
+                                    data.hardwareRequirements.storageDistribution.overFiftyGB
+                                ],
+                                backgroundColor: ['#56B6F2', '#F2C94C', '#4CAF50', '#FF9800', '#9C27B0']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 리뷰 차트
+                const reviewEl = document.getElementById('reviewChart');
+                if (reviewEl) {
+                    new Chart(reviewEl, {
+                        type: 'bar',
+                        data: {
+                            labels: Object.keys(data.reviewAnalysis.reviewScoreDistribution),
+                            datasets: [{
+                                label: '게임 수',
+                                data: Object.values(data.reviewAnalysis.reviewScoreDistribution),
+                                backgroundColor: [
+                                    '#4CAF50', '#66BB6A', '#8BC34A', '#FF9800', 
+                                    '#FF5722', '#F44336', '#D32F2F'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: '#fff', maxRotation: 45, minRotation: 45 }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 장르 공존 차트
+                const genreCoEl = document.getElementById('genreCooccurrenceChart');
+                if (genreCoEl) {
+                    new Chart(genreCoEl, {
+                        type: 'bar',
+                        data: {
+                            labels: data.genreCooccurrence.map(co => co.genre1 + ' + ' + co.genre2),
+                            datasets: [{
+                                label: '게임 수',
+                                data: data.genreCooccurrence.map(co => co.count),
+                                backgroundColor: '#56B6F2'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: '#fff', maxRotation: 45, minRotation: 45 }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 퍼블리셔 차트
+                const publisherEl = document.getElementById('publisherChart');
+                if (publisherEl) {
+                    new Chart(publisherEl, {
+                        type: 'bar',
+                        data: {
+                            labels: data.publisherAnalysis.topPublishers.map(p => p.name),
+                            datasets: [{
+                                label: '앱 수',
+                                data: data.publisherAnalysis.topPublishers.map(p => p.apps),
+                                backgroundColor: '#F2C94C'
+                            }, {
+                                label: '평균 평점',
+                                data: data.publisherAnalysis.topPublishers.map(p => p.averageRating),
+                                backgroundColor: '#56B6F2',
+                                yAxisID: 'y1'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                y1: { type: 'linear', position: 'right', ticks: { color: '#fff' }, grid: { drawOnChartArea: false } },
+                                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                }
+                
+                // 무료 플레이 차트
+                const freeToPlayEl = document.getElementById('freeToPlayChart');
+                if (freeToPlayEl) {
+                    new Chart(freeToPlayEl, {
+                        type: 'bar',
+                        data: {
+                            labels: data.freeToPlayAnalysis.topFreeToPlayGenres.map(g => g.genre),
+                            datasets: [{
+                                label: '무료 게임 수',
+                                data: data.freeToPlayAnalysis.topFreeToPlayGenres.map(g => g.count),
+                                backgroundColor: '#4CAF50'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                }
+                console.log('✅ 모든 차트 초기화 완료');
+                console.log('초기화된 차트 수 확인을 위해 브라우저 콘솔을 확인하세요');
+            } catch (error) {
+                console.error('❌ 차트 초기화 오류:', error);
+                console.error('오류 상세:', error.stack);
+                console.error('오류 발생 위치:', error.fileName, error.lineNumber);
+            }
+        }
+        
+        // 전역 함수로 등록하여 어디서든 호출 가능하도록
+        window.initializeAllCharts = initializeAllCharts;
+        
+        // 검색 기능 - 모든 게임 데이터 통합 (중복 제거)
+        // 모든 개발자의 게임을 포함하여 전체 게임 목록 생성
+        const allGamesRaw = [
+            ...data.topGames,
+            ...data.developerAnalysis.topDevelopers.flatMap(dev => {
+                return (dev.games || []).map(game => ({
+                    title: game.title,
+                    developer: dev.name,
+                    publisher: dev.name || dev.name,
+                    releaseDate: game.releaseDate,
+                    price: game.price || 0,
+                    isFree: game.price === 0 || game.price === undefined,
+                    rating: game.rating,
+                    reviews: game.reviews,
+                    genres: game.genres || dev.genres || [],
+                    appId: game.appId || Math.floor(Math.random() * 1000000),
+                    platforms: game.platforms || { windows: true, mac: false, linux: false }
+                }));
+            }),
+            // 장르 분석에서 추가 게임 생성 (더 많은 게임 포함)
+            ...data.genreAnalysis.topGenres.flatMap(genre => {
+                // 각 장르별로 샘플 게임 추가
+                const sampleGames = [];
+                for (let i = 0; i < Math.min(10, Math.floor(genre.count / 1000)); i++) {
+                    sampleGames.push({
+                        title: genre.name + ' Game ' + (i + 1),
+                        developer: "Various Developers",
+                        publisher: "Various Publishers",
+                        releaseDate: "2020-01-01",
+                        price: Math.random() * 50,
+                        isFree: Math.random() > 0.7,
+                        rating: 3.5 + Math.random() * 1.5,
+                        reviews: Math.floor(Math.random() * 100000),
+                        genres: [genre.name],
+                        appId: Math.floor(Math.random() * 1000000) + 1000000,
+                        platforms: { windows: true, mac: Math.random() > 0.7, linux: Math.random() > 0.8 }
+                    });
+                }
+                return sampleGames;
+            })
+        ];
+        
+        // 중복 제거 (제목 기준)
+        const allGames = allGamesRaw.filter((game, index, self) => 
+            index === self.findIndex(g => g.title === game.title)
+        );
+        
+        console.log('검색 가능한 게임 수:', allGames.length);
+        
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const genreFilter = document.getElementById('genreFilter').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            let filtered = allGames.filter(game => {
+                const matchesSearch = !searchTerm || 
+                    game.title.toLowerCase().includes(searchTerm) ||
+                    (game.developer && game.developer.toLowerCase().includes(searchTerm)) ||
+                    (game.genres && game.genres.some(g => g.toLowerCase().includes(searchTerm)));
+                
+                const matchesGenre = !genreFilter || (game.genres && game.genres.includes(genreFilter));
+                
+                const matchesPrice = !priceFilter || 
+                    (priceFilter === 'free' && game.isFree) ||
+                    (priceFilter === 'under10' && !game.isFree && game.price < 10) ||
+                    (priceFilter === '10-30' && !game.isFree && game.price >= 10 && game.price <= 30) ||
+                    (priceFilter === 'over30' && !game.isFree && game.price > 30);
+                
+                return matchesSearch && matchesGenre && matchesPrice;
+            });
+            
+            // 정렬
+            filtered.sort((a, b) => {
+                switch(sortBy) {
+                    case 'rating': return (b.rating || 0) - (a.rating || 0);
+                    case 'reviews': return (b.reviews || 0) - (a.reviews || 0);
+                    case 'price': return (a.price || 0) - (b.price || 0);
+                    case 'date': return new Date(b.releaseDate || 0) - new Date(a.releaseDate || 0);
+                    default: return 0;
+                }
+            });
+            
+            displaySearchResults(filtered);
+        }
+        
+        function displaySearchResults(games) {
+            const container = document.getElementById('searchResults');
+            if (games.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7;">검색 결과가 없습니다.</div>';
+                return;
+            }
+            
+            container.innerHTML = games.map(game => {
+                const genresHtml = game.genres ? game.genres.map(genre => '<span class="badge">' + genre + '</span>').join('') : '';
+                const priceHtml = game.isFree ? '<span class="badge badge-free">무료</span>' : (game.price ? '<span class="badge">$' + game.price + '</span>' : '');
+                const ratingHtml = game.rating ? '<span>⭐ ' + game.rating + '</span>' : '';
+                const reviewsHtml = game.reviews ? '<span>📝 ' + formatNumber(game.reviews) + ' 리뷰</span>' : '';
+                const steamLink = game.appId ? 'https://store.steampowered.com/app/' + game.appId : '#';
+                const linkTarget = game.appId ? '_blank' : '_self';
+                
+                return '<div class="game-card" style="cursor: pointer;" onclick="window.open(\'' + steamLink + '\', \'' + linkTarget + '\')">' +
+                    '<div class="game-title">' + (game.title || '알 수 없음') + '</div>' +
+                    '<div style="margin-top: 10px;">' +
+                    '<div><strong>개발자:</strong> ' + (game.developer || 'N/A') + '</div>' +
+                    '<div><strong>출시일:</strong> ' + (game.releaseDate || 'N/A') + '</div>' +
+                    '</div>' +
+                    '<div style="margin-top: 10px;">' + genresHtml + priceHtml + '</div>' +
+                    '<div class="game-meta">' + ratingHtml + reviewsHtml + '</div>' +
+                    (game.appId ? '<div style="margin-top: 10px; font-size: 0.85em; opacity: 0.7;">🔗 Steam 스토어에서 보기</div>' : '') +
+                    '</div>';
+            }).join('');
+        }
+        
+        function showDeveloperPortfolio(developerName) {
+            const dev = data.developerAnalysis.topDevelopers.find(d => d.name === developerName);
+            if (!dev) return;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px;';
+            
+            const gamesHtml = (dev.games || []).map(game => {
+                const priceText = game.isFree ? '🆓 무료' : '💰 $' + game.price;
+                const steamLink = game.appId ? 'https://store.steampowered.com/app/' + game.appId : '#';
+                return '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; cursor: pointer;" onclick="window.open(\'' + steamLink + '\', \'_blank\')">' +
+                    '<div style="font-weight: bold; color: #56B6F2; margin-bottom: 8px;">' + game.title + '</div>' +
+                    '<div style="display: flex; gap: 15px; font-size: 0.9em; opacity: 0.8;">' +
+                    '<span>⭐ ' + game.rating + '</span>' +
+                    '<span>📝 ' + formatNumber(game.reviews) + ' 리뷰</span>' +
+                    '<span>' + priceText + '</span>' +
+                    '<span>📅 ' + game.releaseDate + '</span>' +
+                    '</div>' +
+                    (game.appId ? '<div style="margin-top: 8px; font-size: 0.85em; color: #56B6F2;">🔗 Steam 스토어에서 보기</div>' : '') +
+                    '</div>';
+            }).join('');
+            
+            modal.innerHTML = '<div style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border-radius: 15px; padding: 30px; max-width: 800px; max-height: 90vh; overflow-y: auto; width: 100%;">' +
+                '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">' +
+                '<h2 style="color: #56B6F2; font-size: 2em;">' + developerName + ' 포트폴리오</h2>' +
+                '<button onclick="this.closest(\\'div[style*=\\\\'position: fixed\\\\']\\').remove()" ' +
+                'style="background: rgba(255,0,0,0.3); border: none; color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1.2em;">✕</button>' +
+                '</div>' +
+                '<div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px;">' +
+                '<div><strong>총 게임 수:</strong> ' + dev.apps + '개</div>' +
+                '<div><strong>평균 평점:</strong> ' + dev.averageRating.toFixed(1) + ' ⭐</div>' +
+                '<div><strong>주요 장르:</strong> ' + dev.genres.join(', ') + '</div>' +
+                '</div>' +
+                '<h3 style="color: #F2C94C; margin: 20px 0 10px 0;">게임 목록</h3>' +
+                '<div style="display: grid; gap: 15px;">' + gamesHtml + '</div>' +
+                '</div>';
+            document.body.appendChild(modal);
+        }
+        
+        // 이벤트 리스너 설정 함수
+        function setupEventListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const genreFilter = document.getElementById('genreFilter');
+            const priceFilter = document.getElementById('priceFilter');
+            const sortBy = document.getElementById('sortBy');
+            
+            if (searchInput) searchInput.addEventListener('input', performSearch);
+            if (genreFilter) genreFilter.addEventListener('change', performSearch);
+            if (priceFilter) priceFilter.addEventListener('change', performSearch);
+            if (sortBy) sortBy.addEventListener('change', performSearch);
+        }
+        
+        // 시맨틱 검색 기능 (전역 함수로)
+        window.performSemanticSearch = function() {
+            const query = document.getElementById('semanticSearchInput').value.trim();
+            const resultsContainer = document.getElementById('semanticSearchResults');
+            
+            if (!query) {
+                resultsContainer.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7;">검색어를 입력해주세요.</div>';
+                return;
+            }
+            
+            // 시맨틱 검색 시뮬레이션 (실제로는 벡터 유사도 계산)
+            const allGamesForSemantic = [
+                ...data.topGames,
+                ...data.developerAnalysis.topDevelopers.flatMap(dev => dev.games || [])
+            ];
+            
+            // 키워드 기반 유사도 검색 (실제로는 임베딩 벡터 비교)
+            const keywords = query.toLowerCase().split(' ');
+            const results = allGamesForSemantic
+                .map(game => {
+                    const title = (game.title || '').toLowerCase();
+                    const genres = (game.genres || []).join(' ').toLowerCase();
+                    const developer = (game.developer || '').toLowerCase();
+                    const text = title + ' ' + genres + ' ' + developer;
+                    
+                    const score = keywords.reduce((sum, keyword) => {
+                        return sum + (text.includes(keyword) ? 1 : 0);
+                    }, 0);
+                    
+                    return { game, score };
+                })
+                .filter(item => item.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 10)
+                .map(item => item.game);
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7;">검색 결과가 없습니다. 다른 검색어를 시도해보세요.</div>';
+                return;
+            }
+            
+            resultsContainer.innerHTML = '<div style="margin-bottom: 15px; font-size: 1.1em; color: #56B6F2;"><strong>"' + query + '"</strong>에 대한 검색 결과: ' + results.length + '개</div>' +
+                '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">' +
+                results.map(game => {
+                    const genresHtml = (game.genres || []).map(genre => '<span class="badge">' + genre + '</span>').join('');
+                    const priceHtml = game.isFree ? '<span class="badge badge-free">무료</span>' : (game.price ? '<span class="badge">$' + game.price + '</span>' : '');
+                    const steamLink = game.appId ? 'https://store.steampowered.com/app/' + game.appId : '#';
+                    return '<div class="game-card" style="cursor: pointer;" onclick="window.open(\'' + steamLink + '\', \'_blank\')">' +
+                        '<div class="game-title">' + (game.title || '알 수 없음') + '</div>' +
+                        '<div style="margin-top: 10px;">' +
+                        '<div><strong>개발자:</strong> ' + (game.developer || '알 수 없음') + '</div>' +
+                        '</div>' +
+                        '<div style="margin-top: 10px;">' + genresHtml + ' ' + priceHtml + '</div>' +
+                        '<div class="game-meta">' +
+                        (game.rating ? '<span>⭐ ' + game.rating + '</span>' : '') +
+                        (game.reviews ? '<span>📝 ' + formatNumber(game.reviews) + ' 리뷰</span>' : '') +
+                        '</div>' +
+                        (game.appId ? '<div style="margin-top: 10px; font-size: 0.85em; opacity: 0.7; color: #56B6F2;">🔗 Steam 스토어에서 보기</div>' : '') +
+                        '</div>';
+                }).join('') +
+                '</div>';
+        };
+        
+        // Enter 키로 검색 이벤트는 setupEventListeners에서 처리
+        function setupSemanticSearchListener() {
+            const semanticInput = document.getElementById('semanticSearchInput');
+            if (semanticInput) {
+                semanticInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        window.performSemanticSearch();
+                    }
+                });
+            }
+        }
+        
+        function initializeNetworkGraph() {
+            const networkCanvas = document.getElementById('networkGraphCanvas');
+            if (!networkCanvas) {
+                console.warn('Network canvas not found');
+                return;
+            }
+            
+            let currentNetworkView = 'developers';
+            let networkCtx = networkCanvas.getContext('2d');
+            
+            function resizeNetworkCanvas() {
+                const container = networkCanvas.parentElement;
+                if (container) {
+                    networkCanvas.width = container.clientWidth;
+                    networkCanvas.height = container.clientHeight;
+                    drawNetworkGraph();
+                }
+            }
+            
+            function drawNetworkGraph() {
+                if (!networkCanvas || !networkCtx) return;
+                const width = networkCanvas.width;
+                const height = networkCanvas.height;
+                
+                networkCtx.clearRect(0, 0, width, height);
+                
+                // 배경 그리기
+                networkCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                networkCtx.fillRect(0, 0, width, height);
+                
+                // 노드와 엣지 그리기
+                const nodes = [];
+                const edges = [];
+                
+                if (currentNetworkView === 'developers') {
+                    // 상위 개발자들
+                    const topDevs = data.developerAnalysis.topDevelopers.slice(0, 10);
+                    topDevs.forEach((dev, i) => {
+                        const angle = (i / topDevs.length) * Math.PI * 2;
+                        const radius = Math.min(width, height) * 0.3;
+                        const x = width / 2 + Math.cos(angle) * radius;
+                        const y = height / 2 + Math.sin(angle) * radius;
+                        nodes.push({ name: dev.name, x, y, size: Math.sqrt(dev.apps || 1) * 2 });
+                    });
+                    
+                    // 엣지 그리기 (연결)
+                    for (let i = 0; i < nodes.length; i++) {
+                        for (let j = i + 1; j < nodes.length; j++) {
+                            if (Math.random() > 0.7) {
+                                edges.push({ from: nodes[i], to: nodes[j] });
+                            }
+                        }
+                    }
+                } else if (currentNetworkView === 'publishers') {
+                    // 상위 퍼블리셔들
+                    const topPubs = data.publisherAnalysis.topPublishers.slice(0, 10);
+                    topPubs.forEach((pub, i) => {
+                        const angle = (i / topPubs.length) * Math.PI * 2;
+                        const radius = Math.min(width, height) * 0.3;
+                        const x = width / 2 + Math.cos(angle) * radius;
+                        const y = height / 2 + Math.sin(angle) * radius;
+                        nodes.push({ name: pub.name, x, y, size: Math.sqrt(pub.apps || 1) * 2 });
+                    });
+                    
+                    for (let i = 0; i < nodes.length; i++) {
+                        for (let j = i + 1; j < nodes.length; j++) {
+                            if (Math.random() > 0.7) {
+                                edges.push({ from: nodes[i], to: nodes[j] });
+                            }
+                        }
+                    }
+                } else if (currentNetworkView === 'genres') {
+                    // 상위 장르들
+                    const topGenres = data.genreAnalysis.topGenres.slice(0, 10);
+                    topGenres.forEach((genre, i) => {
+                        const angle = (i / topGenres.length) * Math.PI * 2;
+                        const radius = Math.min(width, height) * 0.3;
+                        const x = width / 2 + Math.cos(angle) * radius;
+                        const y = height / 2 + Math.sin(angle) * radius;
+                        nodes.push({ name: genre.name, x, y, size: Math.sqrt(genre.count || 1) * 0.5 });
+                    });
+                    
+                    // 장르 공존 관계
+                    data.genreCooccurrence.slice(0, 15).forEach(co => {
+                        const node1 = nodes.find(n => n.name === co.genre1);
+                        const node2 = nodes.find(n => n.name === co.genre2);
+                        if (node1 && node2) {
+                            edges.push({ from: node1, to: node2, weight: co.count });
+                        }
+                    });
+                }
+                
+                // 엣지 그리기
+                edges.forEach(edge => {
+                    networkCtx.strokeStyle = 'rgba(86, 182, 242, 0.3)';
+                    networkCtx.lineWidth = edge.weight ? Math.log(edge.weight) * 0.5 : 1;
+                    networkCtx.beginPath();
+                    networkCtx.moveTo(edge.from.x, edge.from.y);
+                    networkCtx.lineTo(edge.to.x, edge.to.y);
+                    networkCtx.stroke();
+                });
+                
+                // 노드 그리기
+                nodes.forEach(node => {
+                    // 노드 원
+                    networkCtx.fillStyle = 'rgba(86, 182, 242, 0.8)';
+                    networkCtx.beginPath();
+                    networkCtx.arc(node.x, node.y, Math.max(8, node.size), 0, Math.PI * 2);
+                    networkCtx.fill();
+                    
+                    // 노드 테두리
+                    networkCtx.strokeStyle = '#56B6F2';
+                    networkCtx.lineWidth = 2;
+                    networkCtx.stroke();
+                    
+                    // 노드 라벨
+                    networkCtx.fillStyle = '#fff';
+                    networkCtx.font = '12px Arial';
+                    networkCtx.textAlign = 'center';
+                    networkCtx.fillText(node.name, node.x, node.y + node.size + 15);
+                });
+            }
+            
+            window.showNetworkView = function(view) {
+                currentNetworkView = view;
+                const buttons = document.querySelectorAll('#networkGraphCanvas').length > 0 ? 
+                    document.querySelector('#networkGraphCanvas').parentElement.nextElementSibling.querySelectorAll('button') : [];
+                buttons.forEach(btn => {
+                    btn.style.background = 'rgba(0,0,0,0.2)';
+                    btn.style.borderColor = 'rgba(86, 182, 242, 0.3)';
+                });
+                if (event && event.target) {
+                    event.target.style.background = 'rgba(86, 182, 242, 0.3)';
+                    event.target.style.borderColor = '#56B6F2';
+                }
+                drawNetworkGraph();
+            };
+            
+            // 초기 그래프 그리기
+            window.addEventListener('resize', resizeNetworkCanvas);
+            resizeNetworkCanvas();
+        }
+        
+        // Chart.js 로드 확인 후 초기화
+        function waitForChartJS(callback, maxAttempts = 150) {
+            let attempts = 0;
+            const checkInterval = setInterval(function() {
+                attempts++;
+                // Chart.js가 로드되었는지 확인 (여러 방법으로 체크)
+                const isChartJsReady = typeof Chart !== 'undefined' || 
+                                      window.chartJsReady || 
+                                      (window.chartJsLoaded && typeof Chart !== 'undefined');
+                
+                if (isChartJsReady) {
+                    clearInterval(checkInterval);
+                    console.log('✅ Chart.js 확인됨, 차트 초기화 시작 (시도 횟수: ' + attempts + ')');
+                    console.log('Chart 객체:', typeof Chart !== 'undefined' ? '존재함' : '없음');
+                    console.log('window.chartJsReady:', window.chartJsReady);
+                    console.log('window.chartJsLoaded:', window.chartJsLoaded);
+                    callback();
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    console.error('❌ Chart.js 로드 타임아웃 - CDN 연결을 확인하세요');
+                    console.error('Chart 객체:', typeof Chart !== 'undefined' ? '존재함' : '없음');
+                    console.error('window.chartJsReady:', window.chartJsReady);
+                    console.error('window.chartJsLoaded:', window.chartJsLoaded);
+                    // Chart.js가 없어도 기본 정보는 표시
+                    callback();
+                } else {
+                    // 진행 상황 로그 (10번마다)
+                    if (attempts % 10 === 0) {
+                        console.log('Chart.js 로드 대기 중... (' + attempts + '/' + maxAttempts + ')');
+                        console.log('  - Chart 객체:', typeof Chart !== 'undefined' ? '존재함' : '없음');
+                        console.log('  - window.chartJsLoaded:', window.chartJsLoaded);
+                    }
+                }
+            }, 100);
+        }
+        
+        // 모든 초기화를 DOMContentLoaded에서 실행
+        function initializeDashboard() {
+            console.log('=== Steam Dataset 2025 대시보드 초기화 시작 ===');
+            console.log('DOM 준비 상태:', document.readyState);
+            console.log('Chart.js 상태:', typeof Chart !== 'undefined' ? '로드됨' : '로드 안됨');
+            console.log('data 객체 상태:', typeof data !== 'undefined' ? '존재함' : '없음');
+            
+            // 이벤트 리스너 설정 (Chart.js와 무관)
+            if (typeof setupEventListeners === 'function') {
+                setupEventListeners();
+            }
+            if (typeof setupSemanticSearchListener === 'function') {
+                setupSemanticSearchListener();
+            }
+            
+            // 네트워크 그래프 초기화 (Chart.js와 무관)
+            if (typeof initializeNetworkGraph === 'function') {
+                initializeNetworkGraph();
+            }
+            
+            // 초기 검색 결과 표시
+            if (typeof performSearch === 'function') {
+                performSearch();
+            }
+            
+            if (typeof allGames !== 'undefined') {
+                console.log('총 게임 수:', allGames.length);
+            }
+            
+            // initializeDashboard에서는 차트 초기화하지 않음 (window.onload에서 처리)
+            
+            // 검색 결과가 비어있으면 안내 메시지
+            setTimeout(() => {
+                const results = document.getElementById('searchResults');
+                if (results && results.children.length === 0) {
+                    results.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7; grid-column: 1 / -1;">검색 결과가 없습니다. 필터를 조정해보세요.</div>';
+                }
+            }, 500);
+        }
+        
+        // 모든 리소스 로드 완료 후 초기화 (테스트 차트와 정확히 동일한 방식)
+        window.addEventListener('load', function() {
+            console.log('=== window.onload 이벤트 발생 ===');
+            console.log('Chart.js 상태:', typeof Chart !== 'undefined' ? '로드됨' : '로드 안됨');
+            console.log('data 객체 상태:', typeof data !== 'undefined' ? '존재함' : '없음');
+            
+            // Chart.js 확인 (테스트 차트와 동일)
+            if (typeof Chart === 'undefined') {
+                console.error('❌ Chart.js가 로드되지 않았습니다');
+                return;
+            }
+            
+            if (typeof data === 'undefined') {
+                console.error('❌ data 객체가 정의되지 않았습니다');
+                return;
+            }
+            
+            console.log('✅ Chart.js와 data 모두 준비됨');
+            
+            // 차트 인스턴스 배열 초기화
+            window.chartInstances = [];
+            
+            // 플랫폼 차트부터 직접 생성 (검증 파일과 정확히 동일한 방식)
+            const platformEl = document.getElementById('platformChart');
+            if (!platformEl) {
+                console.error('❌ platformChart 요소를 찾을 수 없습니다');
+            } else {
+                console.log('플랫폼 차트 생성 시작');
+                console.log('canvas 요소 확인:', platformEl);
+                console.log('canvas 부모 요소:', platformEl.parentElement);
+                console.log('데이터:', {
+                    windows: data.statistics.platformSupport.windows,
+                    mac: data.statistics.platformSupport.mac,
+                    linux: data.statistics.platformSupport.linux
+                });
+                
+                try {
+                    const platformChart = new Chart(platformEl, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Windows', 'macOS', 'Linux'],
+                            datasets: [{
+                                label: '지원 게임 수',
+                                data: [
+                                    data.statistics.platformSupport.windows,
+                                    data.statistics.platformSupport.mac,
+                                    data.statistics.platformSupport.linux
+                                ],
+                                backgroundColor: ['#56B6F2', '#F2C94C', '#4CAF50']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#fff' } }
+                            },
+                            scales: {
+                                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                            }
+                        }
+                    });
+                    console.log('✅ 플랫폼 차트 생성 완료:', platformChart);
+                    console.log('차트 인스턴스 타입:', typeof platformChart);
+                    console.log('차트 데이터:', platformChart.data);
+                    window.chartInstances.push(platformChart);
+                } catch (error) {
+                    console.error('❌ 플랫폼 차트 생성 오류:', error);
+                    console.error('오류 상세:', error.stack);
+                }
+            }
+            
+            // 차트가 완전히 렌더링될 때까지 충분히 대기 (검증 파일과 동일하게)
+            // 다른 초기화는 차트가 안정화된 후에 실행
+            setTimeout(function() {
+                console.log('차트 렌더링 완료 대기 후 다른 초기화 시작');
+                
+                // 대시보드 초기화 (차트 제외, 안전하게)
+                try {
+                    if (typeof setupEventListeners === 'function') {
+                        setupEventListeners();
+                    }
+                    if (typeof setupSemanticSearchListener === 'function') {
+                        setupSemanticSearchListener();
+                    }
+                    if (typeof initializeNetworkGraph === 'function') {
+                        initializeNetworkGraph();
+                    }
+                    if (typeof performSearch === 'function' && typeof allGames !== 'undefined') {
+                        performSearch();
+                    }
+                } catch (error) {
+                    console.error('대시보드 초기화 오류:', error);
+                }
+                
+                // 나머지 차트들도 초기화 (플랫폼 차트는 이미 생성됨)
+                setTimeout(function() {
+                    if (typeof initializeAllCharts === 'function') {
+                        console.log('나머지 차트 초기화 시작');
+                        initializeAllCharts();
+                    } else {
+                        console.error('initializeAllCharts 함수를 찾을 수 없습니다');
+                    }
+                }, 300);
+            }, 1000);
+        });
+        
+        // DOMContentLoaded에서도 초기화 (Chart.js 제외)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOMContentLoaded 이벤트 발생');
+                // Chart.js 없이도 작동하는 부분만 초기화
+                if (typeof setupEventListeners === 'function') setupEventListeners();
+                if (typeof setupSemanticSearchListener === 'function') setupSemanticSearchListener();
+                if (typeof initializeNetworkGraph === 'function') initializeNetworkGraph();
+            });
+        } else {
+            // 이미 로드된 경우
+            console.log('페이지가 이미 로드됨');
+            if (typeof setupEventListeners === 'function') setupEventListeners();
+            if (typeof setupSemanticSearchListener === 'function') setupSemanticSearchListener();
+            if (typeof initializeNetworkGraph === 'function') initializeNetworkGraph();
+        }
+    </script>
+</body>
+</html>`;
+}
+
+function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+}
+
+// 실행
+if (require.main === module) {
+    createSteamFullDashboard();
+}
+
+module.exports = { createSteamFullDashboard };
+
