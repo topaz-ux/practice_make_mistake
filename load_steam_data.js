@@ -100,31 +100,59 @@ function loadLocalData() {
 async function fetchSteamAppList() {
     return new Promise((resolve, reject) => {
         // Steam의 공개 앱 목록 API (인증 불필요)
-        const url = 'https://api.steampowered.com/ISteamApps/GetAppList/v2/';
+        // 참고: https://steamcommunity.com/dev
+        // 여러 엔드포인트 시도
+        const urls = [
+            'https://api.steampowered.com/ISteamApps/GetAppList/v2/?format=json',
+            'https://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json',
+            'https://api.steampowered.com/ISteamApps/GetAppList/v1/?format=json'
+        ];
         
-        https.get(url, (res) => {
-            if (res.statusCode !== 200) {
-                reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+        let currentIndex = 0;
+        
+        function tryNextUrl() {
+            if (currentIndex >= urls.length) {
+                reject(new Error('모든 Steam API 엔드포인트 시도 실패'));
                 return;
             }
             
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => {
-                try {
-                    const json = JSON.parse(data);
-                    if (json.applist && json.applist.apps) {
-                        resolve(json);
-                    } else {
-                        reject(new Error('예상하지 못한 응답 형식'));
-                    }
-                } catch (e) {
-                    reject(new Error(`JSON 파싱 실패: ${e.message}`));
+            const url = urls[currentIndex];
+            console.log(`   Steam API 시도 중: ${url}`);
+            
+            https.get(url, (res) => {
+                if (res.statusCode !== 200) {
+                    console.log(`   ⚠️ HTTP ${res.statusCode}, 다음 URL 시도...`);
+                    currentIndex++;
+                    tryNextUrl();
+                    return;
                 }
+                
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    try {
+                        const json = JSON.parse(data);
+                        if (json.applist && json.applist.apps) {
+                            resolve(json);
+                        } else {
+                            console.log(`   ⚠️ 예상하지 못한 응답 형식, 다음 URL 시도...`);
+                            currentIndex++;
+                            tryNextUrl();
+                        }
+                    } catch (e) {
+                        console.log(`   ⚠️ JSON 파싱 실패, 다음 URL 시도...`);
+                        currentIndex++;
+                        tryNextUrl();
+                    }
+                });
+            }).on('error', (err) => {
+                console.log(`   ⚠️ 네트워크 오류: ${err.message}, 다음 URL 시도...`);
+                currentIndex++;
+                tryNextUrl();
             });
-        }).on('error', (err) => {
-            reject(new Error(`네트워크 오류: ${err.message}`));
-        });
+        }
+        
+        tryNextUrl();
     });
 }
 
