@@ -2527,7 +2527,11 @@
                 // 검색 결과 새로고침 (검색어가 있는 경우)
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput && searchInput.value.trim() && typeof performSearch === 'function') {
+                    console.log('검색어가 있어 검색 재실행:', searchInput.value);
                     performSearch();
+                } else {
+                    console.log('✅ Steam API 데이터 로드 완료 - 검색 준비됨');
+                    console.log('💡 이제 모든 Steam 게임을 검색할 수 있습니다!');
                 }
                 
                 return; // 성공적으로 완료
@@ -2670,6 +2674,9 @@
                 }
             });
         }
+        
+        // 전역 함수로 등록하여 onclick에서 호출 가능하도록
+        window.showDeveloperPortfolio = showDeveloperPortfolio;
         
         // 이벤트 리스너 설정 함수
         function setupEventListeners() {
