@@ -27,17 +27,26 @@
    - "Commit to main" (또는 현재 브랜치 이름) 버튼 클릭
    - "Push origin" 버튼을 클릭하여 GitHub에 업로드
 
-### 2단계: GitHub Pages 활성화
+### 2단계: 저장소를 공개로 변경 (필수!)
 
-1. **GitHub 웹사이트 접속**
-   - 브라우저에서 [github.com](https://github.com) 접속
-   - 로그인 후 해당 저장소로 이동
+**⚠️ 중요**: 무료 GitHub Pages는 공개 저장소에서만 작동합니다.
 
-2. **Settings 메뉴로 이동**
+1. **저장소 설정으로 이동**
    - 저장소 페이지에서 상단의 **"Settings"** 탭 클릭
-   - 왼쪽 사이드바에서 **"Pages"** 메뉴 클릭
+   - 왼쪽 사이드바 맨 아래 **"General"** 섹션으로 스크롤
 
-3. **Pages 설정**
+2. **저장소 공개 설정**
+   - **"Danger Zone"** 섹션 찾기
+   - **"Change visibility"** 또는 **"Change repository visibility"** 클릭
+   - **"Make public"** 선택
+   - 저장소 이름을 입력하여 확인
+   - **"I understand, change repository visibility"** 클릭
+
+3. **GitHub Pages 활성화**
+   - Settings에서 왼쪽 사이드바의 **"Pages"** 메뉴 클릭
+   - 이제 "Upgrade or make this repository public" 메시지가 사라지고 설정 옵션이 나타납니다
+
+4. **Pages 설정**
    - **Source** 섹션에서:
      - **Branch**: `main` (또는 `master`) 선택
      - **Folder**: `/ (root)` 선택
@@ -82,9 +91,10 @@
 
 ## ⚠️ 주의사항
 
-1. **공개 저장소**
-   - 무료 GitHub Pages는 공개 저장소에서만 작동합니다
+1. **공개 저장소 (중요!)**
+   - 무료 GitHub Pages는 **공개 저장소에서만 작동합니다**
    - 비공개 저장소를 사용하려면 GitHub Pro 계정이 필요합니다
+   - **해결 방법**: 저장소를 공개로 변경하세요 (아래 참조)
 
 2. **파일 크기 제한**
    - GitHub Pages는 1GB 저장소 제한이 있습니다
@@ -98,8 +108,18 @@
 
 ### 커스텀 도메인 사용 (선택사항)
 
-1. Settings > Pages에서 "Custom domain" 섹션에 도메인 입력
-2. 도메인 DNS 설정에서 CNAME 레코드 추가
+**⚠️ 주의**: 커스텀 도메인을 사용하지 않는 경우 이 필드를 비워두세요!
+
+1. Settings > Pages에서 "Custom domain" 섹션 확인
+2. **커스텀 도메인을 사용하지 않는 경우**: 필드를 비워두고 Save 클릭
+3. **실제 도메인을 사용하는 경우**:
+   - 올바른 도메인 형식 입력 (예: `example.com`, `www.example.com`)
+   - 도메인 DNS 설정에서 CNAME 레코드 추가
+   - GitHub에서 제공하는 DNS 레코드 설정
+
+**오류 해결**: "The custom domain is not properly formatted" 오류가 발생하면:
+- 커스텀 도메인 필드를 완전히 비우고 Save 클릭
+- 또는 올바른 도메인 형식으로 수정 (도메인 이름만, 경로나 특수문자 없이)
 
 ### README 업데이트
 
@@ -113,11 +133,32 @@
 
 ## 📞 문제 해결
 
+### "Canceling since a higher priority waiting request" 오류
+
+**이것은 실제 오류가 아닙니다!** 
+
+이 메시지는 여러 배포 요청이 동시에 발생했을 때 나타나는 정상적인 동작입니다.
+
+**해결 방법:**
+1. **기다리기**: GitHub가 자동으로 최신 배포를 처리합니다
+2. **Actions 탭 확인**: 
+   - 저장소의 "Actions" 탭으로 이동
+   - 가장 최근 배포 작업이 "Success" 상태인지 확인
+3. **Pages 설정 확인**:
+   - Settings > Pages에서 배포 상태 확인
+   - 녹색 체크 표시가 있으면 배포 성공입니다
+
+**예방 방법:**
+- 여러 번 빠르게 커밋/푸시하지 않기
+- 설정 변경 후 한 번만 저장하기
+- 배포가 완료될 때까지 기다리기 (보통 1-2분)
+
 ### 페이지가 표시되지 않는 경우
 
 1. **배포 상태 확인**
    - Settings > Pages에서 배포 상태 확인
    - Actions 탭에서 배포 로그 확인
+   - 가장 최근 성공한 배포 확인
 
 2. **파일 이름 확인**
    - `index.html` 파일이 루트 디렉토리에 있는지 확인
@@ -126,6 +167,7 @@
 3. **캐시 문제**
    - 브라우저 캐시 삭제 후 다시 시도
    - 시크릿 모드에서 접속 시도
+   - URL에 `?v=2` 같은 쿼리 파라미터 추가하여 강제 새로고침
 
 ### 차트가 표시되지 않는 경우
 

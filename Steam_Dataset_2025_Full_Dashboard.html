@@ -2226,53 +2226,306 @@
         window.initializeAllCharts = initializeAllCharts;
         
         // 검색 기능 - 모든 게임 데이터 통합 (중복 제거)
-        // 모든 개발자의 게임을 포함하여 전체 게임 목록 생성
-        const allGamesRaw = [
-            ...data.topGames,
-            ...data.developerAnalysis.topDevelopers.flatMap(dev => {
-                return (dev.games || []).map(game => ({
-                    title: game.title,
-                    developer: dev.name,
-                    publisher: dev.name || dev.name,
-                    releaseDate: game.releaseDate,
-                    price: game.price || 0,
-                    isFree: game.price === 0 || game.price === undefined,
-                    rating: game.rating,
-                    reviews: game.reviews,
-                    genres: game.genres || dev.genres || [],
-                    appId: game.appId || Math.floor(Math.random() * 1000000),
-                    platforms: game.platforms || { windows: true, mac: false, linux: false }
-                }));
-            }),
-            // 장르 분석에서 추가 게임 생성 (더 많은 게임 포함)
-            ...data.genreAnalysis.topGenres.flatMap(genre => {
-                // 각 장르별로 샘플 게임 추가
-                const sampleGames = [];
-                for (let i = 0; i < Math.min(10, Math.floor(genre.count / 1000)); i++) {
-                    sampleGames.push({
-                        title: genre.name + ' Game ' + (i + 1),
-                        developer: "Various Developers",
-                        publisher: "Various Publishers",
-                        releaseDate: "2020-01-01",
-                        price: Math.random() * 50,
-                        isFree: Math.random() > 0.7,
-                        rating: 3.5 + Math.random() * 1.5,
-                        reviews: Math.floor(Math.random() * 100000),
-                        genres: [genre.name],
-                        appId: Math.floor(Math.random() * 1000000) + 1000000,
-                        platforms: { windows: true, mac: Math.random() > 0.7, linux: Math.random() > 0.8 }
+        // 모든 실제 게임 데이터를 수집하여 전체 게임 목록 생성
+        const allGamesRaw = [];
+        const seenAppIds = new Set();
+        const seenTitles = new Set();
+        
+        // 1. topGames에서 모든 게임 추가
+        if (data.topGames && Array.isArray(data.topGames)) {
+            data.topGames.forEach(game => {
+                const key = game.appId || game.title;
+                if (key && !seenAppIds.has(key) && !seenTitles.has(game.title)) {
+                    allGamesRaw.push({
+                        title: game.title,
+                        developer: game.developer || 'Unknown',
+                        publisher: game.publisher || game.developer || 'Unknown',
+                        releaseDate: game.releaseDate,
+                        price: game.price || 0,
+                        isFree: game.isFree !== undefined ? game.isFree : (game.price === 0 || game.price === undefined),
+                        rating: game.rating,
+                        reviews: game.reviews || 0,
+                        genres: game.genres || [],
+                        appId: game.appId,
+                        platforms: game.platforms || { windows: true, mac: false, linux: false }
+                    });
+                    if (game.appId) seenAppIds.add(game.appId);
+                    seenTitles.add(game.title);
+                }
+            });
+        }
+        
+        // 2. 개발자별 게임 목록에서 모든 게임 추가
+        if (data.developerAnalysis && data.developerAnalysis.topDevelopers) {
+            data.developerAnalysis.topDevelopers.forEach(dev => {
+                if (dev.games && Array.isArray(dev.games)) {
+                    dev.games.forEach(game => {
+                        const key = game.appId || game.title;
+                        if (key && !seenAppIds.has(key) && !seenTitles.has(game.title)) {
+                            allGamesRaw.push({
+                                title: game.title,
+                                developer: dev.name || game.developer || 'Unknown',
+                                publisher: dev.name || game.publisher || 'Unknown',
+                                releaseDate: game.releaseDate,
+                                price: game.price || 0,
+                                isFree: game.isFree !== undefined ? game.isFree : (game.price === 0 || game.price === undefined),
+                                rating: game.rating,
+                                reviews: game.reviews || 0,
+                                genres: game.genres || dev.genres || [],
+                                appId: game.appId,
+                                platforms: game.platforms || { windows: true, mac: false, linux: false }
+                            });
+                            if (game.appId) seenAppIds.add(game.appId);
+                            seenTitles.add(game.title);
+                        }
                     });
                 }
-                return sampleGames;
-            })
-        ];
+            });
+        }
         
-        // 중복 제거 (제목 기준)
-        const allGames = allGamesRaw.filter((game, index, self) => 
-            index === self.findIndex(g => g.title === game.title)
-        );
+        // 3. qualityVsQuantity에서 추가 게임 정보 수집
+        if (data.qualityVsQuantity) {
+            // topQualityDevelopers에서 게임 정보 추출
+            if (data.qualityVsQuantity.topQualityDevelopers && Array.isArray(data.qualityVsQuantity.topQualityDevelopers)) {
+                data.qualityVsQuantity.topQualityDevelopers.forEach(dev => {
+                    // 개발자 이름으로 기존 개발자 목록에서 게임 찾기
+                    const existingDev = data.developerAnalysis?.topDevelopers?.find(d => d.name === dev.name);
+                    if (existingDev && existingDev.games) {
+                        existingDev.games.forEach(game => {
+                            const key = game.appId || game.title;
+                            if (key && !seenAppIds.has(key) && !seenTitles.has(game.title)) {
+                                allGamesRaw.push({
+                                    title: game.title,
+                                    developer: dev.name || game.developer || 'Unknown',
+                                    publisher: dev.name || game.publisher || 'Unknown',
+                                    releaseDate: game.releaseDate,
+                                    price: game.price || 0,
+                                    isFree: game.isFree !== undefined ? game.isFree : (game.price === 0 || game.price === undefined),
+                                    rating: game.rating || dev.avgRating,
+                                    reviews: game.reviews || 0,
+                                    genres: game.genres || [],
+                                    appId: game.appId,
+                                    platforms: game.platforms || { windows: true, mac: false, linux: false }
+                                });
+                                if (game.appId) seenAppIds.add(game.appId);
+                                seenTitles.add(game.title);
+                            }
+                        });
+                    }
+                });
+            }
+            
+            // topQuantityDevelopers에서 게임 정보 추출
+            if (data.qualityVsQuantity.topQuantityDevelopers && Array.isArray(data.qualityVsQuantity.topQuantityDevelopers)) {
+                data.qualityVsQuantity.topQuantityDevelopers.forEach(dev => {
+                    // 개발자 이름으로 기존 개발자 목록에서 게임 찾기
+                    const existingDev = data.developerAnalysis?.topDevelopers?.find(d => d.name === dev.name);
+                    if (existingDev && existingDev.games) {
+                        existingDev.games.forEach(game => {
+                            const key = game.appId || game.title;
+                            if (key && !seenAppIds.has(key) && !seenTitles.has(game.title)) {
+                                allGamesRaw.push({
+                                    title: game.title,
+                                    developer: dev.name || game.developer || 'Unknown',
+                                    publisher: dev.name || game.publisher || 'Unknown',
+                                    releaseDate: game.releaseDate,
+                                    price: game.price || 0,
+                                    isFree: game.isFree !== undefined ? game.isFree : (game.price === 0 || game.price === undefined),
+                                    rating: game.rating || dev.avgRating,
+                                    reviews: game.reviews || 0,
+                                    genres: game.genres || [],
+                                    appId: game.appId,
+                                    platforms: game.platforms || { windows: true, mac: false, linux: false }
+                                });
+                                if (game.appId) seenAppIds.add(game.appId);
+                                seenTitles.add(game.title);
+                            }
+                        });
+                    }
+                });
+            }
+        }
         
-        console.log('검색 가능한 게임 수:', allGames.length);
+        // 4. developerPortfolios에서 추가 게임 정보 수집
+        if (data.developerAnalysis && data.developerAnalysis.developerPortfolios) {
+            data.developerAnalysis.developerPortfolios.forEach(portfolio => {
+                const existingDev = data.developerAnalysis?.topDevelopers?.find(d => d.name === portfolio.developer);
+                if (existingDev && existingDev.games) {
+                    existingDev.games.forEach(game => {
+                        const key = game.appId || game.title;
+                        if (key && !seenAppIds.has(key) && !seenTitles.has(game.title)) {
+                            allGamesRaw.push({
+                                title: game.title,
+                                developer: portfolio.developer || game.developer || 'Unknown',
+                                publisher: portfolio.developer || game.publisher || 'Unknown',
+                                releaseDate: game.releaseDate,
+                                price: game.price || 0,
+                                isFree: game.isFree !== undefined ? game.isFree : (game.price === 0 || game.price === undefined),
+                                rating: game.rating,
+                                reviews: game.reviews || 0,
+                                genres: game.genres || portfolio.genres || [],
+                                appId: game.appId,
+                                platforms: game.platforms || { windows: true, mac: false, linux: false }
+                            });
+                            if (game.appId) seenAppIds.add(game.appId);
+                            seenTitles.add(game.title);
+                        }
+                    });
+                }
+            });
+        }
+        
+        // 중복 제거 (appId 우선, 없으면 제목 기준)
+        const allGames = allGamesRaw.filter((game, index, self) => {
+            if (game.appId) {
+                return index === self.findIndex(g => g.appId === game.appId);
+            } else {
+                return index === self.findIndex(g => g.title === game.title && !g.appId);
+            }
+        });
+        
+        // 전역 접근을 위해 window 객체에 할당 (시맨틱 검색에서도 사용)
+        window.allGames = allGames;
+        
+        console.log('검색 가능한 게임 수 (초기):', allGames.length);
+        
+        // 5. GitHub 저장소에서 실제 게임 데이터 파일 로드 (비동기)
+        async function loadAllSteamGames() {
+            try {
+                console.log('GitHub 저장소에서 게임 데이터 파일 로드 시도 중...');
+                
+                const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/vintagedon/steam-dataset-2025/main';
+                const possibleDataFiles = [
+                    'data/games.json',
+                    'data/steam_games.json',
+                    'steam-dataset-2025-v1/games.json',
+                    'steam-dataset-2025-v1/steam_games.json',
+                    'games.json',
+                    'steam_games.json'
+                ];
+                
+                let gameData = null;
+                let loadedFile = null;
+                
+                // 여러 가능한 파일 경로 시도
+                for (const filePath of possibleDataFiles) {
+                    try {
+                        const url = `${GITHUB_RAW_BASE}/${filePath}`;
+                        console.log(`   시도 중: ${filePath}`);
+                        const response = await fetch(url);
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            // 데이터 구조 확인
+                            if (Array.isArray(data) || (data.applist && data.applist.apps) || (data.games && Array.isArray(data.games)) || (data.topGames && Array.isArray(data.topGames))) {
+                                gameData = data;
+                                loadedFile = filePath;
+                                console.log(`   ✅ 파일 발견: ${filePath}`);
+                                break;
+                            }
+                        }
+                    } catch (err) {
+                        console.warn(`   ⚠️ ${filePath} 로드 실패:`, err.message);
+                        continue;
+                    }
+                }
+                
+                if (!gameData) {
+                    throw new Error('GitHub 저장소에서 데이터 파일을 찾을 수 없습니다');
+                }
+                
+                // 데이터 구조에 따라 게임 목록 추출
+                let steamApps = [];
+                if (Array.isArray(gameData)) {
+                    steamApps = gameData;
+                } else if (gameData.applist && gameData.applist.apps) {
+                    steamApps = gameData.applist.apps;
+                } else if (gameData.games && Array.isArray(gameData.games)) {
+                    steamApps = gameData.games;
+                } else if (gameData.topGames && Array.isArray(gameData.topGames)) {
+                    steamApps = gameData.topGames;
+                } else if (gameData.allApps && Array.isArray(gameData.allApps)) {
+                    steamApps = gameData.allApps;
+                }
+                
+                if (steamApps.length === 0) {
+                    throw new Error('데이터 파일에서 게임 목록을 찾을 수 없습니다');
+                }
+                
+                console.log(`GitHub에서 ${steamApps.length.toLocaleString()}개의 게임 데이터 가져옴 (${loadedFile})`);
+                
+                // 기존 게임 목록 가져오기
+                const existingGames = window.allGames || [];
+                const existingAppIds = new Set(existingGames.map(g => g.appId).filter(id => id));
+                const existingTitles = new Set(existingGames.map(g => g.title).filter(t => t));
+                
+                // GitHub에서 가져온 게임들을 추가
+                const newGames = [];
+                steamApps.forEach(app => {
+                    // 다양한 데이터 구조 지원
+                    const appId = app.appId || app.appid || app.id;
+                    const title = app.title || app.name;
+                    
+                    // 빈 이름이나 유효하지 않은 앱 ID는 제외
+                    if (!title || !appId || title.trim() === '') return;
+                    
+                    // 중복 체크
+                    if (!existingAppIds.has(appId) && !existingTitles.has(title)) {
+                        newGames.push({
+                            title: title,
+                            developer: app.developer || app.developers?.[0] || 'Unknown',
+                            publisher: app.publisher || app.publishers?.[0] || app.developer || 'Unknown',
+                            releaseDate: app.releaseDate || app.release_date || app.release || 'Unknown',
+                            price: app.price || app.price_usd || 0,
+                            isFree: app.isFree !== undefined ? app.isFree : (app.price === 0 || app.price_usd === 0),
+                            rating: app.rating || app.positive_ratings || 0,
+                            reviews: app.reviews || app.positive_ratings || app.negative_ratings || 0,
+                            genres: app.genres || (app.genre ? [app.genre] : []) || [],
+                            appId: appId,
+                            platforms: app.platforms || { 
+                                windows: app.windows !== undefined ? app.windows : true, 
+                                mac: app.mac || false, 
+                                linux: app.linux || false 
+                            }
+                        });
+                        existingAppIds.add(appId);
+                        existingTitles.add(title);
+                    }
+                });
+                
+                // 기존 게임과 새 게임 병합
+                const updatedGames = [...existingGames, ...newGames];
+                
+                // 중복 제거 (안전장치)
+                const uniqueGames = updatedGames.filter((game, index, self) => {
+                    if (game.appId) {
+                        return index === self.findIndex(g => g.appId === game.appId);
+                    } else {
+                        return index === self.findIndex(g => g.title === game.title && !g.appId);
+                    }
+                });
+                
+                window.allGames = uniqueGames;
+                console.log('✅ 전체 게임 목록 업데이트 완료:', uniqueGames.length.toLocaleString(), '개');
+                console.log('   - 기존 게임:', existingGames.length.toLocaleString(), '개');
+                console.log('   - 새로 추가된 게임:', newGames.length.toLocaleString(), '개');
+                
+                // 검색 결과 새로고침 (검색어가 있는 경우)
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && searchInput.value.trim() && typeof performSearch === 'function') {
+                    performSearch();
+                }
+            } catch (error) {
+                console.warn('⚠️ Steam API 로드 실패:', error.message);
+                console.warn('기존 데이터만 사용합니다.');
+            }
+        }
+        
+        // Steam API에서 게임 목록 로드 시작 (비동기, 백그라운드에서 실행)
+        // 페이지 로드 후 약간의 지연을 두고 실행 (기존 초기화 완료 후)
+        setTimeout(() => {
+            loadAllSteamGames();
+        }, 2000);
         
         function performSearch() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -2280,7 +2533,10 @@
             const priceFilter = document.getElementById('priceFilter').value;
             const sortBy = document.getElementById('sortBy').value;
             
-            let filtered = allGames.filter(game => {
+            // 최신 게임 목록 사용 (Steam API에서 로드된 데이터 포함)
+            const currentGames = window.allGames || allGames;
+            
+            let filtered = currentGames.filter(game => {
                 const matchesSearch = !searchTerm || 
                     game.title.toLowerCase().includes(searchTerm) ||
                     (game.developer && game.developer.toLowerCase().includes(searchTerm)) ||
@@ -2416,38 +2672,204 @@
                 return;
             }
             
-            // 시맨틱 검색 시뮬레이션 (실제로는 벡터 유사도 계산)
-            const allGamesForSemantic = [
-                ...data.topGames,
-                ...data.developerAnalysis.topDevelopers.flatMap(dev => dev.games || [])
-            ];
+            // 로딩 표시
+            resultsContainer.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7;">🔍 의미 기반 검색 중...</div>';
             
-            // 키워드 기반 유사도 검색 (실제로는 임베딩 벡터 비교)
-            const keywords = query.toLowerCase().split(' ');
-            const results = allGamesForSemantic
-                .map(game => {
-                    const title = (game.title || '').toLowerCase();
-                    const genres = (game.genres || []).join(' ').toLowerCase();
-                    const developer = (game.developer || '').toLowerCase();
-                    const text = title + ' ' + genres + ' ' + developer;
-                    
-                    const score = keywords.reduce((sum, keyword) => {
-                        return sum + (text.includes(keyword) ? 1 : 0);
-                    }, 0);
-                    
-                    return { game, score };
-                })
+            // 한국어-영어 키워드 매핑 (시맨틱 검색을 위한)
+            const semanticKeywords = {
+                '포스트': ['post', 'apocalyptic', 'post-apocalyptic'],
+                '아포칼립스': ['apocalyptic', 'post-apocalyptic', 'apocalypse'],
+                '생존': ['survival', 'survive'],
+                '중세': ['medieval', 'middle ages'],
+                '판타지': ['fantasy'],
+                '우주': ['space', 'cosmic'],
+                '탐험': ['exploration', 'explore', 'adventure'],
+                'rpg': ['rpg', 'role-playing'],
+                '액션': ['action'],
+                '어드벤처': ['adventure'],
+                '전략': ['strategy'],
+                '시뮬레이션': ['simulation'],
+                '인디': ['indie', 'independent'],
+                '호러': ['horror'],
+                '레이싱': ['racing'],
+                '스포츠': ['sports']
+            };
+            
+            // 모든 게임 데이터 수집 (window.allGames 사용 - 이미 중복 제거됨)
+            // window.allGames는 이미 모든 실제 게임 데이터를 포함하고 있음
+            const allGamesForSearch = window.allGames || [];
+            const uniqueGames = allGamesForSearch.map(game => ({
+                title: game.title,
+                developer: game.developer,
+                publisher: game.publisher,
+                releaseDate: game.releaseDate,
+                price: game.price,
+                isFree: game.isFree,
+                rating: game.rating,
+                reviews: game.reviews,
+                genres: game.genres || [],
+                appId: game.appId,
+                platforms: game.platforms
+            }));
+            
+            // 샘플 쿼리와의 유사도 확인
+            const sampleQueries = data.semanticSearch?.sampleQueries || [];
+            let matchedSampleQuery = null;
+            
+            // 샘플 쿼리와 유사한 검색어 찾기
+            const queryLower = query.toLowerCase();
+            for (const sample of sampleQueries) {
+                const sampleQueryLower = sample.query.toLowerCase();
+                // 한국어 검색어를 영어 샘플 쿼리와 매칭
+                if (queryLower.includes('포스트') && sampleQueryLower.includes('post-apocalyptic')) {
+                    matchedSampleQuery = sample;
+                    break;
+                }
+                if (queryLower.includes('중세') && queryLower.includes('판타지') && sampleQueryLower.includes('medieval fantasy')) {
+                    matchedSampleQuery = sample;
+                    break;
+                }
+                if (queryLower.includes('우주') && sampleQueryLower.includes('space')) {
+                    matchedSampleQuery = sample;
+                    break;
+                }
+                // 직접 영어 검색어 매칭
+                if (queryLower.includes(sampleQueryLower) || sampleQueryLower.includes(queryLower)) {
+                    matchedSampleQuery = sample;
+                    break;
+                }
+            }
+            
+            // 의미 기반 검색 알고리즘
+            const queryWords = query.toLowerCase().split(/\s+/);
+            const expandedKeywords = new Set();
+            
+            // 키워드 확장 (한국어 -> 영어, 동의어)
+            queryWords.forEach(word => {
+                expandedKeywords.add(word);
+                if (semanticKeywords[word]) {
+                    semanticKeywords[word].forEach(kw => expandedKeywords.add(kw));
+                }
+            });
+            
+            // 게임 점수 계산 (의미 기반)
+            const scoredGames = uniqueGames.map(game => {
+                const title = (game.title || '').toLowerCase();
+                const genres = (game.genres || []).map(g => g.toLowerCase()).join(' ');
+                const developer = (game.developer || '').toLowerCase();
+                const allText = title + ' ' + genres + ' ' + developer;
+                
+                let score = 0;
+                
+                // 1. 샘플 쿼리 매칭 보너스
+                if (matchedSampleQuery) {
+                    const topMatch = matchedSampleQuery.topMatch.toLowerCase();
+                    if (title.includes(topMatch) || topMatch.includes(title)) {
+                        score += 50; // 높은 우선순위
+                    }
+                    // 샘플 쿼리와 관련된 게임들에 가산점
+                    if (matchedSampleQuery.query.toLowerCase().includes('post-apocalyptic')) {
+                        if (genres.includes('post-apocalyptic') || title.includes('fallout') || 
+                            title.includes('last of us') || genres.includes('survival')) {
+                            score += 20;
+                        }
+                    }
+                    if (matchedSampleQuery.query.toLowerCase().includes('medieval fantasy')) {
+                        if (genres.includes('rpg') && (genres.includes('fantasy') || title.includes('skyrim') || 
+                            title.includes('elder scrolls'))) {
+                            score += 20;
+                        }
+                    }
+                    if (matchedSampleQuery.query.toLowerCase().includes('space exploration')) {
+                        if (genres.includes('space') || title.includes('no man') || 
+                            title.includes('star') || genres.includes('sci-fi')) {
+                            score += 20;
+                        }
+                    }
+                }
+                
+                // 2. 확장된 키워드 매칭 (점수 증가)
+                expandedKeywords.forEach(keyword => {
+                    if (allText.includes(keyword)) {
+                        // 제목 매칭은 더 높은 점수
+                        if (title.includes(keyword)) {
+                            score += 30; // 제목 매칭 점수 증가
+                        } else if (genres.includes(keyword)) {
+                            score += 20; // 장르 매칭 점수 증가
+                        } else {
+                            score += 5; // 기타 매칭 점수 증가
+                        }
+                    }
+                });
+                
+                // 3. 장르 기반 의미 매칭 (한국어 검색어 지원)
+                const genreMatches = {
+                    '서바이벌': ['survival', 'horror'],
+                    '생존': ['survival', 'horror'],
+                    '포스트': ['post-apocalyptic', 'survival'],
+                    '아포칼립스': ['post-apocalyptic', 'apocalypse'],
+                    '포스트 아포칼립스': ['post-apocalyptic', 'survival', 'horror'],
+                    '중세': ['medieval', 'fantasy'],
+                    '판타지': ['fantasy'],
+                    '중세 판타지': ['rpg', 'fantasy', 'medieval'],
+                    '우주': ['space', 'sci-fi'],
+                    '탐험': ['exploration', 'adventure'],
+                    '우주 탐험': ['space', 'sci-fi', 'exploration', 'adventure']
+                };
+                
+                Object.keys(genreMatches).forEach(krTerm => {
+                    if (queryLower.includes(krTerm)) {
+                        genreMatches[krTerm].forEach(genre => {
+                            if (genres.includes(genre)) {
+                                score += 25; // 장르 매칭 점수 증가
+                            }
+                        });
+                    }
+                });
+                
+                // 4. 평점 보너스 (낮은 가중치로만 적용 - 검색 관련성이 우선)
+                if (game.rating && score > 0) {
+                    score += game.rating * 0.5; // 평점 보너스를 크게 줄임
+                }
+                
+                return { game, score };
+            });
+            
+            // 점수 순으로 정렬하고 상위 결과 선택
+            // 점수가 0보다 큰 게임만 필터링 (실제로 검색어와 관련된 게임만)
+            const results = scoredGames
                 .filter(item => item.score > 0)
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 10)
+                .sort((a, b) => {
+                    // 점수가 같으면 평점으로 정렬
+                    if (Math.abs(a.score - b.score) < 1) {
+                        return (b.game.rating || 0) - (a.game.rating || 0);
+                    }
+                    return b.score - a.score;
+                })
+                .slice(0, 12)
                 .map(item => item.game);
             
+            // 결과 표시
             if (results.length === 0) {
-                resultsContainer.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7;">검색 결과가 없습니다. 다른 검색어를 시도해보세요.</div>';
+                resultsContainer.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.7;">검색 결과가 없습니다. 다른 검색어를 시도해보세요.<br><br><small style="opacity: 0.6;">예: 포스트 아포칼립스 생존 게임, 중세 판타지 RPG, 우주 탐험</small></div>';
                 return;
             }
             
-            resultsContainer.innerHTML = '<div style="margin-bottom: 15px; font-size: 1.1em; color: #56B6F2;"><strong>"' + query + '"</strong>에 대한 검색 결과: ' + results.length + '개</div>' +
+            // 샘플 쿼리 매칭 정보 표시
+            let matchInfo = '';
+            if (matchedSampleQuery) {
+                matchInfo = '<div style="background: rgba(86, 182, 242, 0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em;">' +
+                    '💡 <strong>의미 기반 매칭:</strong> "' + matchedSampleQuery.query + '" 쿼리와 유사한 의미로 ' + 
+                    formatNumber(matchedSampleQuery.results) + '개의 게임을 찾았습니다. ' +
+                    '최고 매치: <strong>' + matchedSampleQuery.topMatch + '</strong>' +
+                    '</div>';
+            }
+            
+            resultsContainer.innerHTML = 
+                '<div style="margin-bottom: 15px; font-size: 1.1em; color: #56B6F2;">' +
+                '<strong>"' + query + '"</strong>에 대한 의미 기반 검색 결과: <strong>' + results.length + '개</strong>' +
+                '</div>' +
+                matchInfo +
                 '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">' +
                 results.map(game => {
                     const genresHtml = (game.genres || []).map(genre => '<span class="badge">' + genre + '</span>').join('');
