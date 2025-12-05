@@ -2397,113 +2397,114 @@
         
         console.log('검색 가능한 게임 수 (초기):', allGames.length);
         
-        // 5. GitHub 저장소에서 실제 게임 데이터 파일 로드 (비동기)
-        // 원본 저장소: https://github.com/vintagedon/steam-dataset-2025
+        // 5. Steam API를 통한 전체 게임 데이터 로드 (비동기)
+        // Steam API 공식 문서: https://steamcommunity.com/dev
         async function loadAllSteamGames() {
             try {
-                console.log('GitHub 저장소에서 게임 데이터 파일 로드 시도 중...');
-                console.log('저장소: https://github.com/vintagedon/steam-dataset-2025');
+                console.log('='.repeat(60));
+                console.log('Steam API를 통한 전체 게임 데이터 로드 시작');
+                console.log('='.repeat(60));
                 
-                const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/vintagedon/steam-dataset-2025/main';
-                // 원본 저장소 구조에 따른 실제 파일 경로들 (load_steam_data.js 기반)
-                const possibleDataFiles = [
-                    'data/games.json',
-                    'data/steam_games.json',
-                    'steam-dataset-2025-v1/games.json',
-                    'steam-dataset-2025-v1/steam_games.json',
-                    'data/steam-dataset-2025-v1/games.json',
-                    'games.json',
-                    'steam_games.json'
+                // Steam API 엔드포인트
+                const STEAM_API_BASE = 'https://api.steampowered.com';
+                
+                // CORS 프록시 (여러 옵션 시도)
+                const PROXY_SERVICES = [
+                    'https://api.allorigins.win/get?url=',
+                    'https://corsproxy.io/?',
+                    'https://api.codetabs.com/v1/proxy?quest='
                 ];
                 
-                let gameData = null;
-                let loadedFile = null;
+                let steamApps = [];
+                let loadSuccess = false;
                 
-                // 여러 가능한 파일 경로 시도
-                for (const filePath of possibleDataFiles) {
+                // 1단계: Steam API GetAppList를 통한 전체 앱 목록 가져오기
+                console.log('\n[1단계] Steam API GetAppList 호출 중...');
+                const appListUrl = `${STEAM_API_BASE}/ISteamApps/GetAppList/v2/?format=json`;
+                
+                for (const proxyBase of PROXY_SERVICES) {
                     try {
-                        const url = `${GITHUB_RAW_BASE}/${filePath}`;
-                        console.log(`   시도 중: ${filePath}`);
-                        const response = await fetch(url);
+                        const proxyUrl = proxyBase + encodeURIComponent(appListUrl);
+                        console.log(`   프록시 시도: ${proxyBase.substring(0, 30)}...`);
+                        
+                        const response = await fetch(proxyUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
                         
                         if (response.ok) {
-                            const data = await response.json();
-                            // 데이터 구조 확인
-                            if (Array.isArray(data) || (data.applist && data.applist.apps) || (data.games && Array.isArray(data.games)) || (data.topGames && Array.isArray(data.topGames))) {
-                                gameData = data;
-                                loadedFile = filePath;
-                                console.log(`   ✅ 파일 발견: ${filePath}`);
+                            let data;
+                            if (proxyBase.includes('allorigins.win')) {
+                                const proxyData = await response.json();
+                                data = JSON.parse(proxyData.contents);
+                            } else {
+                                data = await response.json();
+                            }
+                            
+                            if (data.applist && data.applist.apps && Array.isArray(data.applist.apps)) {
+                                steamApps = data.applist.apps;
+                                loadSuccess = true;
+                                console.log(`   ✅ 성공! ${steamApps.length.toLocaleString()}개의 앱 목록 로드 완료`);
                                 break;
                             }
                         }
                     } catch (err) {
-                        console.warn(`   ⚠️ ${filePath} 로드 실패:`, err.message);
+                        console.warn(`   ⚠️ 프록시 실패:`, err.message);
                         continue;
                     }
                 }
                 
-                if (!gameData) {
-                    throw new Error('GitHub 저장소에서 데이터 파일을 찾을 수 없습니다');
+                if (!loadSuccess || steamApps.length === 0) {
+                    console.warn('⚠️ Steam API GetAppList 실패 - 기존 데이터만 사용합니다.');
+                    return;
                 }
                 
-                // 데이터 구조에 따라 게임 목록 추출
-                let steamApps = [];
-                if (Array.isArray(gameData)) {
-                    steamApps = gameData;
-                } else if (gameData.applist && gameData.applist.apps) {
-                    steamApps = gameData.applist.apps;
-                } else if (gameData.games && Array.isArray(gameData.games)) {
-                    steamApps = gameData.games;
-                } else if (gameData.topGames && Array.isArray(gameData.topGames)) {
-                    steamApps = gameData.topGames;
-                } else if (gameData.allApps && Array.isArray(gameData.allApps)) {
-                    steamApps = gameData.allApps;
-                }
-                
-                if (steamApps.length === 0) {
-                    throw new Error('데이터 파일에서 게임 목록을 찾을 수 없습니다');
-                }
-                
-                console.log(`GitHub에서 ${steamApps.length.toLocaleString()}개의 게임 데이터 가져옴 (${loadedFile})`);
+                console.log(`\n[2단계] ${steamApps.length.toLocaleString()}개 앱 데이터 처리 중...`);
                 
                 // 기존 게임 목록 가져오기
                 const existingGames = window.allGames || [];
                 const existingAppIds = new Set(existingGames.map(g => g.appId).filter(id => id));
                 const existingTitles = new Set(existingGames.map(g => g.title).filter(t => t));
                 
-                // GitHub에서 가져온 게임들을 추가
+                // Steam API에서 가져온 앱들을 게임 데이터 형식으로 변환
                 const newGames = [];
-                steamApps.forEach(app => {
-                    // 다양한 데이터 구조 지원
-                    const appId = app.appId || app.appid || app.id;
-                    const title = app.title || app.name;
-                    
+                let processed = 0;
+                const batchSize = 1000; // 진행 상황 표시를 위한 배치 크기
+                
+                for (const app of steamApps) {
                     // 빈 이름이나 유효하지 않은 앱 ID는 제외
-                    if (!title || !appId || title.trim() === '') return;
+                    if (!app.name || !app.appid || app.name.trim() === '') continue;
                     
                     // 중복 체크
-                    if (!existingAppIds.has(appId) && !existingTitles.has(title)) {
+                    if (!existingAppIds.has(app.appid) && !existingTitles.has(app.name)) {
                         newGames.push({
-                            title: title,
-                            developer: app.developer || app.developers?.[0] || 'Unknown',
-                            publisher: app.publisher || app.publishers?.[0] || app.developer || 'Unknown',
-                            releaseDate: app.releaseDate || app.release_date || app.release || 'Unknown',
-                            price: app.price || app.price_usd || 0,
-                            isFree: app.isFree !== undefined ? app.isFree : (app.price === 0 || app.price_usd === 0),
-                            rating: app.rating || app.positive_ratings || 0,
-                            reviews: app.reviews || app.positive_ratings || app.negative_ratings || 0,
-                            genres: app.genres || (app.genre ? [app.genre] : []) || [],
-                            appId: appId,
-                            platforms: app.platforms || { 
-                                windows: app.windows !== undefined ? app.windows : true, 
-                                mac: app.mac || false, 
-                                linux: app.linux || false 
-                            }
+                            title: app.name,
+                            developer: 'Unknown', // 상세 정보는 개별 API 호출 필요
+                            publisher: 'Unknown',
+                            releaseDate: 'Unknown',
+                            price: 0,
+                            isFree: false,
+                            rating: 0,
+                            reviews: 0,
+                            genres: [],
+                            appId: app.appid,
+                            platforms: { windows: true, mac: false, linux: false }
                         });
-                        existingAppIds.add(appId);
-                        existingTitles.add(title);
+                        existingAppIds.add(app.appid);
+                        existingTitles.add(app.name);
                     }
-                });
+                    
+                    processed++;
+                    if (processed % batchSize === 0) {
+                        console.log(`   처리 중: ${processed.toLocaleString()} / ${steamApps.length.toLocaleString()}`);
+                    }
+                }
+                
+                console.log(`\n[3단계] 게임 데이터 병합 중...`);
+                console.log(`   - 기존 게임: ${existingGames.length.toLocaleString()}개`);
+                console.log(`   - 새로 추가: ${newGames.length.toLocaleString()}개`);
                 
                 // 기존 게임과 새 게임 병합
                 const updatedGames = [...existingGames, ...newGames];
@@ -2518,15 +2519,17 @@
                 });
                 
                 window.allGames = uniqueGames;
-                console.log('✅ 전체 게임 목록 업데이트 완료:', uniqueGames.length.toLocaleString(), '개');
-                console.log('   - 기존 게임:', existingGames.length.toLocaleString(), '개');
-                console.log('   - 새로 추가된 게임:', newGames.length.toLocaleString(), '개');
+                console.log(`\n✅ Steam API 데이터 로드 완료!`);
+                console.log(`   총 게임 수: ${uniqueGames.length.toLocaleString()}개`);
+                console.log(`   - 기존 데이터: ${existingGames.length.toLocaleString()}개`);
+                console.log(`   - Steam API: ${newGames.length.toLocaleString()}개`);
                 
                 // 검색 결과 새로고침 (검색어가 있는 경우)
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput && searchInput.value.trim() && typeof performSearch === 'function') {
                     performSearch();
                 }
+                
             } catch (error) {
                 console.warn('⚠️ Steam API 로드 실패:', error.message);
                 console.warn('기존 데이터만 사용합니다.');
