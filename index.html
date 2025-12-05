@@ -1011,29 +1011,8 @@
                     <div style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">
                         아래는 실제 시맨틱 검색 예시입니다. 키워드가 정확히 일치하지 않아도 의미가 비슷한 게임을 찾습니다.
                     </div>
-                    
-                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                        <div style="font-weight: bold; color: #56B6F2;">"post-apocalyptic survival"</div>
-                        <div style="margin-top: 5px; opacity: 0.8;">결과: 1.2K개 | 최고 매치: Fallout 4</div>
-                        <div style="font-size: 0.85em; opacity: 0.7; margin-top: 5px; font-style: italic;">
-                            → "post-apocalyptic survival"라는 의미와 유사한 게임 1.2K개 발견
-                        </div>
-                    </div>
-                    
-                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                        <div style="font-weight: bold; color: #56B6F2;">"medieval fantasy RPG"</div>
-                        <div style="margin-top: 5px; opacity: 0.8;">결과: 2.3K개 | 최고 매치: The Elder Scrolls V: Skyrim</div>
-                        <div style="font-size: 0.85em; opacity: 0.7; margin-top: 5px; font-style: italic;">
-                            → "medieval fantasy RPG"라는 의미와 유사한 게임 2.3K개 발견
-                        </div>
-                    </div>
-                    
-                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                        <div style="font-weight: bold; color: #56B6F2;">"space exploration"</div>
-                        <div style="margin-top: 5px; opacity: 0.8;">결과: 987개 | 최고 매치: No Man's Sky</div>
-                        <div style="font-size: 0.85em; opacity: 0.7; margin-top: 5px; font-style: italic;">
-                            → "space exploration"라는 의미와 유사한 게임 987개 발견
-                        </div>
+                    <div id="sampleQueriesContainer">
+                        <!-- 샘플 쿼리는 JavaScript로 동적으로 생성됩니다 -->
                     </div>
                     
                 </div>
@@ -1751,6 +1730,35 @@
             return num.toString();
         }
         
+        // 샘플 쿼리 동적 생성
+        function renderSampleQueries() {
+            const container = document.getElementById('sampleQueriesContainer');
+            if (!container) return;
+            
+            const sampleQueries = data.semanticSearch?.sampleQueries || [];
+            if (sampleQueries.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">샘플 쿼리 데이터가 없습니다.</div>';
+                return;
+            }
+            
+            container.innerHTML = sampleQueries.map(query => `
+                <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <div style="font-weight: bold; color: #56B6F2;">"${query.query}"</div>
+                    <div style="margin-top: 5px; opacity: 0.8;">결과: ${formatNumber(query.results)}개 | 최고 매치: ${query.topMatch}</div>
+                    <div style="font-size: 0.85em; opacity: 0.7; margin-top: 5px; font-style: italic;">
+                        → "${query.query}"라는 의미와 유사한 게임 ${formatNumber(query.results)}개 발견
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 페이지 로드 시 샘플 쿼리 렌더링
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderSampleQueries);
+        } else {
+            renderSampleQueries();
+        }
+        
         function showTab(tabId, clickedElement) {
             console.log('=== showTab 호출 ===', tabId, clickedElement);
             
@@ -2390,16 +2398,20 @@
         console.log('검색 가능한 게임 수 (초기):', allGames.length);
         
         // 5. GitHub 저장소에서 실제 게임 데이터 파일 로드 (비동기)
+        // 원본 저장소: https://github.com/vintagedon/steam-dataset-2025
         async function loadAllSteamGames() {
             try {
                 console.log('GitHub 저장소에서 게임 데이터 파일 로드 시도 중...');
+                console.log('저장소: https://github.com/vintagedon/steam-dataset-2025');
                 
                 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/vintagedon/steam-dataset-2025/main';
+                // 원본 저장소 구조에 따른 실제 파일 경로들 (load_steam_data.js 기반)
                 const possibleDataFiles = [
                     'data/games.json',
                     'data/steam_games.json',
                     'steam-dataset-2025-v1/games.json',
                     'steam-dataset-2025-v1/steam_games.json',
+                    'data/steam-dataset-2025-v1/games.json',
                     'games.json',
                     'steam_games.json'
                 ];
